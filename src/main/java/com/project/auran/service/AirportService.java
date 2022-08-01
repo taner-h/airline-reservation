@@ -16,14 +16,14 @@ public class AirportService {
 
     private final AirportRepository airportRepository;
 
-    @Autowired
-    private CityRepository cityRepository;
 
     @Autowired
     public AirportService(AirportRepository airportRepository) {
         this.airportRepository = airportRepository;
     }
 
+    @Autowired
+    private CityRepository cityRepository;
     public Airport addAirport(Long cityId, Airport airport) {
         Optional<Airport> airportName = airportRepository.findAirportByName(airport.getName());
         if (airportName.isPresent()) throw new RuntimeException("an airport by that name already exists.");

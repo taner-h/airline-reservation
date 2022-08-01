@@ -47,7 +47,6 @@ public class AirlineController {
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     @DeleteMapping(path = "{airlineId}")
     public void deleteAirline(@PathVariable Long airlineId) {
-
         airlineService.deleteAirline(airlineId);
     }
 

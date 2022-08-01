@@ -23,9 +23,6 @@ public class AirlineService {
     @Autowired
     private CountryRepository countryRepository;
 
-
-
-
     public List<Airline> getAllAirlines() {
         return airlineRepository.findAll();
     }
@@ -53,8 +50,6 @@ public class AirlineService {
         }
         airlineRepository.save(airline);
         return airline;
-
-
     }
 
     public void deleteAirline(Long airlineId) {

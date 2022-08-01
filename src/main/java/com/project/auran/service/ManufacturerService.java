@@ -1,11 +1,14 @@
 package com.project.auran.service;
 
+import com.project.auran.model.Manufacturer;
 import com.project.auran.model.Country;
 import com.project.auran.model.Manufacturer;
 import com.project.auran.repository.CountryRepository;
 import com.project.auran.repository.ManufacturerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 import java.util.Optional;
@@ -32,11 +35,38 @@ public class ManufacturerService {
         manufacturer.setCountry(country);
         manufacturerRepository.save(manufacturer);
         return manufacturer;
-
-
     }
 
     public List<Manufacturer> getAllManufacturers() {
         return manufacturerRepository.findAll();
+    }
+
+    public Manufacturer updateManufacturer(Long manufacturerId, String name, String website, Long countryId) {
+
+        Manufacturer manufacturer = (Manufacturer) manufacturerRepository.findManufacturerById(manufacturerId)
+                .orElseThrow(() -> new IllegalStateException("no manufacturer found with given id (" + manufacturerId + ")"));
+
+        if (name != null) manufacturer.setName(name);
+        if (website != null) manufacturer.setWebsite(website);
+        if (countryId != null) {
+            Country country = countryRepository.findCountryById(countryId)
+                    .orElseThrow(() -> new IllegalStateException("no countries found with given id"));
+            manufacturer.setCountry(country);
+        }
+        manufacturerRepository.save(manufacturer);
+        return manufacturer;
+    
+    }
+
+    public void deleteManufacturer(Long manufacturerId) {
+        manufacturerRepository.findManufacturerById(manufacturerId)
+                .orElseThrow(() -> new IllegalStateException("no manufacturer found with given id (" + manufacturerId + ")"));
+        manufacturerRepository.deleteById(manufacturerId);
+
+    }
+
+    public Manufacturer getManufacturer(Long manufacturerId) {
+        return manufacturerRepository.findManufacturerById(manufacturerId)
+                .orElseThrow(() -> new IllegalStateException("no manufacturer found with given id (" + manufacturerId + ")"));
     }
 }

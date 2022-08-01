@@ -9,4 +9,6 @@ import java.util.Optional;
 public interface  ManufacturerRepository extends JpaRepository<Manufacturer, Long> {
 
     Optional<Manufacturer> findByName(String name);
+
+    Optional<Manufacturer> findManufacturerById(Long manufacturerId);
 }

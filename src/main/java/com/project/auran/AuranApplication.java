@@ -10,11 +10,11 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class AuranApplication implements CommandLineRunner {
 
-	@Autowired
-	private AirlineRepository airlineRepository;
-
-	@Autowired
-	private CountryRepository countryRepository;
+//	@Autowired
+//	private AirlineRepository airlineRepository;
+//
+//	@Autowired
+//	private CountryRepository countryRepository;
 
 	public static void main(String[] args) {
 		SpringApplication.run(AuranApplication.class, args);
