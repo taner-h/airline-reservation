@@ -7,25 +7,22 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
-@Data
 @Entity
 @Table
-@AllArgsConstructor
-@NoArgsConstructor
-public class Manufacturer {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
-
-    @NotNull
-    private String name;
-
-    @ManyToOne(fetch = FetchType.EAGER, optional = false)
-    @JoinColumn(name="country_id")
-    private Country country;
-
-    @NotNull
-    private String website;
+public class Manufacturer extends Company {
+//    @Id
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    private long id;
+//
+//    @NotNull
+//    private String name;
+//
+//    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+//    @JoinColumn(name="country_id")
+//    private Country country;
+//
+//    @NotNull
+//    private String website;
 
 
 }

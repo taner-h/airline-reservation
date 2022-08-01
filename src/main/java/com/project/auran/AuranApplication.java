@@ -1,8 +1,6 @@
 package com.project.auran;
 
-import com.project.auran.model.Company;
-import com.project.auran.model.Country;
-import com.project.auran.repository.CompanyRepository;
+import com.project.auran.repository.AirlineRepository;
 import com.project.auran.repository.CountryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -13,7 +11,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class AuranApplication implements CommandLineRunner {
 
 	@Autowired
-	private CompanyRepository companyRepository;
+	private AirlineRepository airlineRepository;
 
 	@Autowired
 	private CountryRepository countryRepository;

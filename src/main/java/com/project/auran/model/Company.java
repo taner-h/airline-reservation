@@ -6,11 +6,9 @@ import lombok.*;
 import javax.persistence.*;
 
 @Data
-@Entity
-@Table
 @AllArgsConstructor
 @NoArgsConstructor
-
+@MappedSuperclass
 public class Company {
 
     @Id
