@@ -12,15 +12,24 @@ import javax.persistence.*;
 @Table
 @AllArgsConstructor
 @NoArgsConstructor
-public class Passenger {
+public class Ticket {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    private String name;
-    private String surname;
+
     @NotNull
-    private String pnr;
+    private String eticket;
+    private String seat;
+    private String flightClass;
+    private String price;
+    private Boolean hasLuggage;
+
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
-    @JoinColumn(name="gender_id")
-    private Gender gender;
+    @JoinColumn(name="passenger_id")
+    private Passenger passenger;
+
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @JoinColumn(name="flight_id")
+    private Flight flight;
+
 }

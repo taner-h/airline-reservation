@@ -22,16 +22,6 @@ public class FlightController {
         this.flightService = flightService;
     }
 
-//    @PostMapping
-//    public Flight addFlight(@RequestParam Long airplaneId,
-//                            @RequestParam Long destId,
-//                            @RequestParam Long srcId,
-//                            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime takeoff,
-//                            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime eta,
-//                            @RequestBody Flight flight){
-//        return flightService.addFlight(airplaneId, destId, srcId, flight, takeoff, eta);
-//    }
-
     @PostMapping
     public Flight addFlight(@RequestParam Long airplaneId,
                             @RequestParam Long destId,

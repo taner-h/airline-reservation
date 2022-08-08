@@ -27,27 +27,6 @@ public class FlightService {
     @Autowired
     private AirportRepository airportRepository;
 
-//    public Flight addFlight(Long airplaneId, Long destId, Long srcId, Flight flight, LocalDateTime takeoff, LocalDateTime eta) {
-//        Optional<Flight> flightName = flightRepository.findByCode(flight.getCode());
-//        if (flightName.isPresent()) throw new RuntimeException("an flight by that name already exists.");
-//        Airplane airplane = airplaneRepository.findAirplaneById(airplaneId)
-//                .orElseThrow(() -> new IllegalStateException("no airplane found with given id"));
-//        flight.setAirplane(airplane);
-//
-//        Airport destAirport = airportRepository.findAirportById(destId)
-//                .orElseThrow(() -> new IllegalStateException("no airport found with given id"));
-//        flight.setDestinationAirport(destAirport);
-//
-//        Airport srcAirport = airportRepository.findAirportById(srcId)
-//                .orElseThrow(() -> new IllegalStateException("no airport found with given id"));
-//        flight.setSourceAirport(srcAirport);
-//        flight.setTakeoff(takeoff);
-//        flight.setTakeoff(eta);
-//        flightRepository.save(flight);
-//        return flight;
-//
-//    }
-
     public Flight addFlight(Long airplaneId, Long destId, Long srcId, Flight flight) {
         Optional<Flight> flightName = flightRepository.findByCode(flight.getCode());
         if (flightName.isPresent()) throw new RuntimeException("a flight by that name already exists.");
