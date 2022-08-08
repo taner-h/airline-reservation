@@ -16,7 +16,6 @@ public class AirportService {
 
     private final AirportRepository airportRepository;
 
-
     @Autowired
     public AirportService(AirportRepository airportRepository) {
         this.airportRepository = airportRepository;
@@ -51,14 +50,11 @@ public class AirportService {
              }
              airportRepository.save(airport);
              return airport;
-
     }
 
     public Airport getAirport(Long airportId) {
         return airportRepository.findById(airportId)
                 .orElseThrow(() -> new IllegalStateException("no airport found with given id"));
-
-
     }
 
     public void deleteAirport(Long airportId) {

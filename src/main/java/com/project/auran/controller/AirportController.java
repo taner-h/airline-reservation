@@ -30,8 +30,8 @@ public class AirportController {
     }
 
 
-    @PostMapping(path = "{cityId}")
-    public Airport addAirport(@PathVariable Long cityId,
+    @PostMapping
+    public Airport addAirport(@RequestParam Long cityId,
                               @RequestBody Airport airport){
         return airportService.addAirport(cityId, airport);
     }

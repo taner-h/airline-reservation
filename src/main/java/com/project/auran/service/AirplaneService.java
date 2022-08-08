@@ -3,6 +3,7 @@ package com.project.auran.service;
 import com.project.auran.model.Airline;
 import com.project.auran.model.Airplane;
 import com.project.auran.model.AirplaneModel;
+import com.project.auran.model.Airplane;
 import com.project.auran.repository.AirlineRepository;
 import com.project.auran.repository.AirplaneModelRepository;
 import com.project.auran.repository.AirplaneRepository;
@@ -51,5 +52,32 @@ public class AirplaneService {
         airplaneRepository.findById(airplaneId)
                 .orElseThrow(() -> new IllegalStateException("no airplane found with given id"));
         airplaneRepository.deleteById(airplaneId);
+    }
+
+    public Airplane getAirplane(Long airplaneId) {
+        return airplaneRepository.findById(airplaneId)
+                .orElseThrow(() -> new IllegalStateException("no airplane found with given id"));
+    }
+
+    public Airplane updateAirplane(Long airplaneId, 
+                                   String registration, 
+                                   Long airplaneModelId, 
+                                   Long airlineId) {
+        Airplane airplane = airplaneRepository.findById(airplaneId)
+                .orElseThrow(() -> new IllegalStateException("no airplane found with given id"));
+        
+        if (registration != null) airplane.setRegistration(registration);
+        if (airplaneModelId != null) {
+            AirplaneModel airplaneModel = airplaneModelRepository.findById(airplaneModelId)
+                    .orElseThrow(() -> new IllegalStateException("no airplane model found with given id"));
+            airplane.setAirplaneModel(airplaneModel);
+        }
+        if (airlineId != null) {
+            Airline airline = airlineRepository.findById(airlineId)
+                    .orElseThrow(() -> new IllegalStateException("no airplane found with given id"));
+            airplane.setAirline(airline);
+        }
+        airplaneRepository.save(airplane);
+        return airplane;
     }
 }
