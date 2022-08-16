@@ -4,12 +4,20 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Filter;
+import org.hibernate.annotations.FilterDef;
+import org.hibernate.annotations.ParamDef;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Data
 @Entity
+@FilterDef(name = "flightSearch",
+        parameters = {
+                @ParamDef(name = "dateStart", type = "java.time.LocalDate"),
+                @ParamDef(name = "dateEnd", type = "java.time.LocalDate")})
+@Filter(name = "flightSearch", condition = "takeoff >= :dateStart and takeoff <= :dateEnd")
 @Table
 @AllArgsConstructor
 @NoArgsConstructor
@@ -33,8 +41,8 @@ public class Flight {
     @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime takeoff;
 
-    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd'T'HH:mm:ss")
-    private LocalDateTime eta;
+
+    private Integer duration;
 
     private String code;
 

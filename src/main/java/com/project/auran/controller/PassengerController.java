@@ -1,6 +1,7 @@
 package com.project.auran.controller;
 
 import com.project.auran.model.Passenger;
+import com.project.auran.model.Ticket;
 import com.project.auran.service.PassengerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -39,4 +40,10 @@ public class PassengerController {
     public void deletePassenger(@PathVariable Long passengerId){
         passengerService.deletePassenger(passengerId);
     }
+
+    @GetMapping(path = "{passengerId}/tickets")
+    public List<Ticket> getPassengerTickets(@PathVariable Long passengerId){
+        return passengerService.getPassengerTickets(passengerId);
+    }
+
 }

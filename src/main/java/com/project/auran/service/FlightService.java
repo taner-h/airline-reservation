@@ -6,26 +6,31 @@ import com.project.auran.model.Flight;
 import com.project.auran.repository.AirplaneRepository;
 import com.project.auran.repository.AirportRepository;
 import com.project.auran.repository.FlightRepository;
+import org.hibernate.Filter;
+import org.hibernate.Session;
+import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 
-import java.time.LocalDateTime;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 public class FlightService {
     private final FlightRepository flightRepository;
-
-    public FlightService(FlightRepository flightRepository){
-        this.flightRepository = flightRepository;
-    }
+    @PersistenceContext
+    EntityManager entityManager;
     @Autowired
     private AirplaneRepository airplaneRepository;
     @Autowired
     private AirportRepository airportRepository;
+
+    public FlightService(FlightRepository flightRepository) {
+        this.flightRepository = flightRepository;
+    }
 
     public Flight addFlight(Long airplaneId, Long destId, Long srcId, Flight flight) {
         Optional<Flight> flightName = flightRepository.findByCode(flight.getCode());
@@ -61,5 +66,28 @@ public class FlightService {
     public Flight getFlight(Long flightId) {
         return flightRepository.findById(flightId)
                 .orElseThrow(() -> new IllegalStateException("no flight found with given id"));
+    }
+
+    public List<Flight> searchFlights(Long srcId, Long destId, LocalDate dateStart,
+                                      LocalDate dateEnd, Integer page, Integer pageSize) {
+
+//
+        Session session = entityManager.unwrap(Session.class);
+        Filter filter = session.enableFilter("flightSearch");
+        filter.setParameter("dateStart", dateStart);
+        filter.setParameter("dateEnd", dateEnd);
+//        String hql = "from Flight f where f.destinationAirport.id = :destId and f.sourceAirport.id = :srcId";
+        Query query = session.createQuery("from Flight f where f.destinationAirport.id = :destId and f.sourceAirport.id = :srcId order by f.id");
+        query.setParameter("destId", destId);
+        query.setParameter("srcId", srcId);
+        if (page != null) query.setFirstResult((page - 1) * pageSize);
+        if (pageSize != null) query.setMaxResults(pageSize);
+        List<Flight> response = query.list();
+        session.close();
+        return response;
+
+//        return entityManager.createQuery("select f from Flight f where f.destinationAirport.id = :destId and f.sourceAirport.id = :srcId", Flight.class).getResultList();
+
+
     }
 }
