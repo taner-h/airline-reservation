@@ -1,5 +1,6 @@
 package com.project.auran.repository;
 
+import com.project.auran.model.Flight;
 import com.project.auran.model.Passenger;
 import com.project.auran.model.Ticket;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -12,4 +13,6 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
     Optional<Ticket> findByEticket(String eticket);
 
     List<Ticket> findTicketByPassenger(Passenger passenger);
+    List<Ticket> findTicketByFlight(Flight flight);
+    void deleteAllByFlight(Flight flight);
 }

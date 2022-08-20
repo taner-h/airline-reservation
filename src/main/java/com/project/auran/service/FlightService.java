@@ -2,14 +2,19 @@ package com.project.auran.service;
 
 import com.project.auran.model.Airplane;
 import com.project.auran.model.Airport;
+import com.project.auran.model.Ticket;
 import com.project.auran.model.Flight;
 import com.project.auran.repository.AirplaneRepository;
 import com.project.auran.repository.AirportRepository;
 import com.project.auran.repository.FlightRepository;
+import com.project.auran.repository.TicketRepository;
 import org.hibernate.Filter;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
@@ -27,6 +32,9 @@ public class FlightService {
     private AirplaneRepository airplaneRepository;
     @Autowired
     private AirportRepository airportRepository;
+    @Autowired
+    private TicketRepository ticketRepository;
+
 
     public FlightService(FlightRepository flightRepository) {
         this.flightRepository = flightRepository;
@@ -51,14 +59,18 @@ public class FlightService {
 
     }
 
-    public List<Flight> getAllFlights() {
-        return flightRepository.findAll();
+
+    public Page<Flight> getAllFlights(Integer page, Integer pageSize, String sortBy) {
+       return flightRepository.findAll(PageRequest.of(page,pageSize, Sort.Direction.ASC,sortBy));
     }
 
 
     public void deleteFlight(Long flightId) {
-        flightRepository.findById(flightId)
+        Flight flight = flightRepository.findById(flightId)
                 .orElseThrow(() -> new IllegalStateException("no flight found with given id"));
+        if (ticketRepository.findTicketByFlight(flight) != null) {
+                ticketRepository.deleteAllByFlight(flight);
+        }
         flightRepository.deleteById(flightId);
     }
 

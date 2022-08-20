@@ -1,0 +1,78 @@
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.logo {
+  fill: #d8dee9;
+  display: block;
+  width: 40px;
+  height: 40px;
+}
+
+.home-logo {
+  fill: #d8dee9;
+  display: block;
+  margin-left: 64px;
+  width: 40px;
+  height: 40px;
+}
+
+.text-link {
+    text-decoration: none;
+    color: #d8dee9;
+
+}
+
+.drawer-logo {
+  color: #d8dee9;
+}
+
+.button-text {
+  color: #d8dee9;
+}
+/* 
+.MuiFab-primary {
+  background-color: #292d3e;
+  color: #292d3e;
+}
+
+.MuiFab-primary:hover {
+  background-color: #292d3e;
+  color: #292d3e;
+  
+} */
