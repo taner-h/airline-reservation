@@ -41,7 +41,15 @@ export default function Dashboard(props) {
           }}
         >
           <Toolbar />
-          <Container maxWidth="lg" sx={{ mt: 6, mb: 4 }}>
+          <Container maxWidth="lg" sx={{ mt: 6, mb: 6 }}>
+            <Typography
+              variant="h3"
+              // align="left"
+              sx={{ fontWeight: "500", mb: 3 }}
+              color="#292d3e"
+            >
+              Dashboard
+            </Typography>
             <Grid container spacing={3}>
               {/* Recent Deposits */}
               <Grid item xs={12} md={6} lg={4}>

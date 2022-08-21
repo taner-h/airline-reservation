@@ -89,22 +89,31 @@ export default function Flights(props) {
     try {
       // console.log(sortBy)
 
-      const airplaneResponse = await fetch(`http://localhost:8080/airplane?`, {
-        method: "GET",
-      });
+      const airplaneResponse = await fetch(
+        `http://localhost:8080/airplane?pageSize=100`,
+        {
+          method: "GET",
+        }
+      );
       // console.log(response)
       const airplaneJson = await airplaneResponse.json();
       // console.log(jsonRes)
       // console.log(flights)
       // console.log(jsonRes);
 
-      const airportResponse = await fetch(`http://localhost:8080/airport?`, {
-        method: "GET",
-      });
+      const airportResponse = await fetch(
+        `http://localhost:8080/airport?pageSize=100`,
+        {
+          method: "GET",
+        }
+      );
       // console.log(response)
       const airportJson = await airportResponse.json();
       // console.log(jsonRes)
-      setInfo({ airplanes: airplaneJson, airports: airportJson });
+      setInfo({
+        airplanes: airplaneJson.content,
+        airports: airportJson.content,
+      });
     } catch (err) {
       console.error(err.message);
     }
@@ -179,7 +188,6 @@ export default function Flights(props) {
           <Container maxWidth="lg" sx={{ mt: 12, mb: 8 }}>
             <Typography
               variant="h3"
-              inline
               // align="left"
               sx={{ fontWeight: "500", mb: 3 }}
               color="#292d3e"
@@ -190,7 +198,6 @@ export default function Flights(props) {
             <Typography
               variant="h6"
               // align="left"
-              inline
               sx={{ fontWeight: "400", mb: 3 }}
               color="#292d3e"
             >
@@ -286,15 +293,17 @@ export default function Flights(props) {
                 </Button>
               </DialogActions>
             </Dialog>
-            <FlightAddDialog
-              flightAddDialogOpen={flightAddDialogOpen}
-              handleCloseFlightAddDialog={handleCloseFlightAddDialog}
-              setFlightChange={setFlightChange}
-              flightChange={flightChange}
-              info={info}
-              // flight={flight}
-              // setFlight={setFlight}
-            />
+            {flightAddDialogOpen && (
+              <FlightAddDialog
+                flightAddDialogOpen={flightAddDialogOpen}
+                handleCloseFlightAddDialog={handleCloseFlightAddDialog}
+                setFlightChange={setFlightChange}
+                flightChange={flightChange}
+                info={info}
+                // flight={flight}
+                // setFlight={setFlight}
+              />
+            )}
             {flightEditDialogOpen && (
               <FlightEditDialog
                 flightEditDialogOpen={flightEditDialogOpen}
