@@ -4,6 +4,7 @@ import com.project.auran.model.Passenger;
 import com.project.auran.model.Ticket;
 import com.project.auran.service.PassengerService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,8 +28,10 @@ public class PassengerController {
     }
 
     @GetMapping
-    public List<Passenger> getPassengers(){
-        return passengerService.getPassengers();
+    public Page<Passenger> getPassengers(@RequestParam(defaultValue = "0") Integer page,
+                                         @RequestParam(defaultValue = "10") Integer pageSize,
+                                         @RequestParam(defaultValue = "id") String sortBy){
+        return passengerService.getPassengers(page, pageSize, sortBy);
     }
 
     @GetMapping(path = "{passengerId}")

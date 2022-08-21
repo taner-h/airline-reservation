@@ -4,6 +4,7 @@ import com.project.auran.model.Airline;
 import com.project.auran.model.Manufacturer;
 import com.project.auran.service.ManufacturerService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -29,8 +30,10 @@ public class ManufacturerController {
     }
 
     @GetMapping
-    public List<Manufacturer> getAllManufacturers(){
-        return manufacturerService.getAllManufacturers();
+    public Page<Manufacturer> getAllManufacturers(@RequestParam(defaultValue = "0") Integer page,
+                                                  @RequestParam(defaultValue = "10") Integer pageSize,
+                                                  @RequestParam(defaultValue = "id") String sortBy)  {
+        return manufacturerService.getAllManufacturers(page, pageSize, sortBy);
     }
 
     @PutMapping(path = "{manufacturerId}")

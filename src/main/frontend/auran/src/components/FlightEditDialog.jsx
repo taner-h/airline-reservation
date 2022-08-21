@@ -16,8 +16,13 @@ import { FormControl, InputLabel, Select, TextField } from "@mui/material";
 import DialogTitle from "@mui/material/DialogTitle";
 import { Container } from "@mui/system";
 
-export default function FlightAddDialog(props) {
-  const { flightAddDialogOpen, handleCloseFlightAddDialog, info } = props;
+export default function FlightEditDialog(props) {
+  const {
+    flightEditDialogOpen,
+    handleCloseFlightEditDialog,
+    info,
+    selectedFlightToEdit,
+  } = props;
 
   const [flight, setFlight] = useState({
     airplane: "",
@@ -31,23 +36,25 @@ export default function FlightAddDialog(props) {
     businessPrice: "",
   });
 
-  const emptyFlight = () => {
+  const convertFlight = () => {
+    // console.log(selectedFlightToEdit);
+
     setFlight({
-      airplane: "",
-      destAirport: "",
-      srcAirport: "",
-      takeoff: null,
-      duration: "",
-      code: "",
-      gate: "",
-      economyPrice: "",
-      businessPrice: "",
+      airplane: selectedFlightToEdit.airplane.id,
+      destAirport: selectedFlightToEdit.destinationAirport.id,
+      srcAirport: selectedFlightToEdit.sourceAirport.id,
+      takeoff: moment(selectedFlightToEdit.takeoff, "YYYY-MM-DDTHH:mm:ss"),
+      duration: selectedFlightToEdit.duration,
+      code: selectedFlightToEdit.code,
+      gate: selectedFlightToEdit.gate,
+      economyPrice: selectedFlightToEdit.economyPrice,
+      businessPrice: selectedFlightToEdit.businessPrice,
     });
   };
-  // const [info, setInfo] = useState({
-  //   airplanes: [],
-  //   airports: [],
-  // });
+
+  useEffect(() => {
+    convertFlight();
+  }, []);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -59,8 +66,8 @@ export default function FlightAddDialog(props) {
       duration,
       code,
       gate,
-      economyPrice,
       businessPrice,
+      economyPrice,
     } = flight;
 
     const takeoff = moment(takeoffMoment).format("YYYY-MM-DDTHH:MM:SS");
@@ -69,17 +76,17 @@ export default function FlightAddDialog(props) {
       duration,
       code,
       gate,
-      economyPrice,
       businessPrice,
+      economyPrice,
     };
 
     try {
       // console.log(sortBy)
 
-      const response = await fetch(
-        `http://localhost:8080/flight?airplaneId=${airplane}&destId=${destAirport}&srcId=${srcAirport}`,
+      const request = await fetch(
+        `http://localhost:8080/flight/${selectedFlightToEdit.id}?airplaneId=${airplane}&destId=${destAirport}&srcId=${srcAirport}`,
         {
-          method: "POST",
+          method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(body),
         }
@@ -93,12 +100,13 @@ export default function FlightAddDialog(props) {
         duration: "",
         code: "",
         gate: "",
-        economyPrice: "",
         businessPrice: "",
+        economyPrice: "",
       });
 
       props.setFlightChange(props.flightChange + 1);
-      handleCloseFlightAddDialog();
+
+      handleCloseFlightEditDialog();
 
       // console.log(jsonRes)
 
@@ -109,71 +117,16 @@ export default function FlightAddDialog(props) {
     }
   };
 
-  // const getInfo = async () => {
-
-  //   try {
-  //     // console.log(sortBy)
-
-  //     const airplaneResponse = await fetch(`http://localhost:8080/airplane?`, {
-  //       method: "GET",
-  //     });
-  //     // console.log(response)
-  //     const airplaneJson = await airplaneResponse.json();
-  //     // console.log(jsonRes)
-  //     // console.log(flights)
-  //     // console.log(jsonRes);
-
-  //     const airportResponse = await fetch(`http://localhost:8080/airport?`, {
-  //       method: "GET",
-  //     });
-  //     // console.log(response)
-  //     const airportJson = await airportResponse.json();
-  //     // console.log(jsonRes)
-  //     setInfo({ airplanes: airplaneJson, airports: airportJson });
-  //   } catch (err) {
-  //     console.error(err.message);
-  //   }
-
-  // if (selectedFlightToEdit != null)
-  // {
-  //   const takeoff =  moment(selectedFlightToEdit.takeoff, "YYYY-MM-DDTHH:mm:ss")
-  //   const {
-  //     airplane,
-  //     destAirport,
-  //     srcAirport,
-  //     duration,
-  //     code,
-  //     gate
-  //   } = selectedFlightToEdit;
-
-  //   const flightToEdit = {
-  //     airplane,
-  //     destAirport,
-  //     srcAirport,
-  //     takeoff,
-  //     duration,
-  //     code,
-  //     gate};
-
-  //   // setFlight({...flight, takeoff: newTakeoff});
-  //   setFlight(flightToEdit);
-  // }
-
-  // console.log(flight);
-
-  // };
-
   return (
     <Dialog
-      open={flightAddDialogOpen}
-      onClose={handleCloseFlightAddDialog}
-      // sx={{ p: 3 }}
+      open={flightEditDialogOpen}
+      onClose={handleCloseFlightEditDialog}
       // fullWidth={true}
       maxWidth="lg"
     >
-      <DialogTitle>Add a new flight.</DialogTitle>
+      <DialogTitle>Edit flight.</DialogTitle>
       <DialogContent>
-        <Box sx={{ justifyContent: "center", alignItems: "center", margin: 2 }}>
+        <Box sx={{ justifyContent: "center", alignItems: "center" }}>
           <Box
             sx={{
               display: "flex",
@@ -346,10 +299,7 @@ export default function FlightAddDialog(props) {
             marginRight: 1,
             marginBottom: 2,
           }}
-          onClick={() => {
-            handleCloseFlightAddDialog();
-            emptyFlight();
-          }}
+          onClick={handleCloseFlightEditDialog}
         >
           Cancel
         </Button>
@@ -364,7 +314,7 @@ export default function FlightAddDialog(props) {
           }}
           onClick={handleSubmit}
         >
-          Add Flight
+          Edit Flight
         </Button>
       </DialogActions>
     </Dialog>

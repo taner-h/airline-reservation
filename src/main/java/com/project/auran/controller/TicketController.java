@@ -6,6 +6,7 @@ import com.project.auran.model.Ticket;
 import com.project.auran.service.FlightService;
 import com.project.auran.service.TicketService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,8 +31,10 @@ public class TicketController {
     }
 
     @GetMapping
-    public List<Ticket> getTickets(){
-        return ticketService.getTickets();
+    public Page<Ticket> getTickets(@RequestParam(defaultValue = "0") Integer page,
+                                   @RequestParam(defaultValue = "10") Integer pageSize,
+                                   @RequestParam(defaultValue = "id") String sortBy) {
+        return ticketService.getTickets(page, pageSize, sortBy);
     }
 
     @GetMapping(path = "{ticketId}")

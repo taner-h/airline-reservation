@@ -1,9 +1,11 @@
 import DashboardNavBar from "./DashboardNavBar";
 import FlightAddDialog from "./FlightAddDialog";
+import FlightEditDialog from "./FlightEditDialog";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import NavBar from "./NavBar";
 import React, { useEffect, useState } from "react";
 import DeleteIcon from "@mui/icons-material/Delete";
+import FlightTakeoffIcon from "@mui/icons-material/FlightTakeoff";
 import Button from "@mui/material/Button";
 import Fab from "@mui/material/Fab";
 import AddIcon from "@mui/icons-material/Add";
@@ -39,26 +41,38 @@ export default function Flights(props) {
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedFlightToDelete, setSelectedFlightToDelete] = useState(null);
   const [selectedFlightToEdit, setSelectedFlightToEdit] = useState(null);
-  const [flightDialogOpen, setFlightDialogOpen] = useState(false);
+  const [flightAddDialogOpen, setFlightAddDialogOpen] = useState(false);
+  const [flightEditDialogOpen, setFlightEditDialogOpen] = useState(false);
+  const [flightChange, setFlightChange] = useState(0);
 
   const [info, setInfo] = useState({
     airplanes: [],
     airports: [],
   });
 
-
-  
   // const handleOpenFlightEditDialog = (flightId) => {
-    //   setFlight(flights.filter(flight => flight.id == flightId));
-    //   setFlightDialogOpen(true);
-    // };
-    
-    const handleOpenFlightAddDialog = () => {
-      setFlightDialogOpen(true);
-    };
+  //   setFlight(flights.filter(flight => flight.id == flightId));
+  //   setFlightAddDialogOpen(true);
+  // };
+
+  const handleOpenFlightAddDialog = () => {
+    setFlightAddDialogOpen(true);
+  };
 
   const handleCloseFlightAddDialog = () => {
-    setFlightDialogOpen(false);
+    setFlightAddDialogOpen(false);
+  };
+
+  const handleOpenFlightEditDialog = (flightId) => {
+    setSelectedFlightToEdit(
+      flights.filter((flight) => flight.id == flightId)[0]
+    );
+    setFlightEditDialogOpen(true);
+  };
+
+  const handleCloseFlightEditDialog = () => {
+    setSelectedFlightToEdit(null);
+    setFlightEditDialogOpen(false);
   };
 
   const handleClickOpenDialog = (id) => {
@@ -72,7 +86,6 @@ export default function Flights(props) {
   };
 
   const getInfo = async () => {
-    
     try {
       // console.log(sortBy)
 
@@ -139,11 +152,11 @@ export default function Flights(props) {
 
   useEffect(() => {
     getFlights();
-    console.log(info.airplanes.length);
-    console.log(info.airports.length);
-
+    // console.log(info.airplanes.length);
+    // console.log(info.airports.length);
+    // setFlightChange(false);
     if (info.airplanes.length === 0 && info.airports.length === 0) getInfo();
-  }, [page]);
+  }, [page, flightChange]);
 
   return (
     <ThemeProvider theme={mdTheme}>
@@ -166,11 +179,22 @@ export default function Flights(props) {
           <Container maxWidth="lg" sx={{ mt: 12, mb: 8 }}>
             <Typography
               variant="h3"
-              align="left"
+              inline
+              // align="left"
+              sx={{ fontWeight: "500", mb: 3 }}
               color="#292d3e"
-              sx={{ mb: 3 }}
             >
               Flights
+            </Typography>
+
+            <Typography
+              variant="h6"
+              // align="left"
+              inline
+              sx={{ fontWeight: "400", mb: 3 }}
+              color="#292d3e"
+            >
+              Add, delete or edit flights.
             </Typography>
 
             <TableContainer component={Paper}>
@@ -182,6 +206,7 @@ export default function Flights(props) {
                     <TableCell align="center">To</TableCell>
                     <TableCell align="center">Takeoff</TableCell>
                     <TableCell align="center">Duration</TableCell>
+                    <TableCell align="center">Price (E/B)</TableCell>
                     <TableCell align="center">Actions</TableCell>
                   </TableRow>
                 </TableHead>
@@ -201,9 +226,12 @@ export default function Flights(props) {
                         {flight.sourceAirport.name}
                       </TableCell>
                       <TableCell align="center">
-                        {moment(flight.takeoff).format("YYYY-MM-DD HH:mm:ss")}
+                        {moment(flight.takeoff).format("DD/MM/YYYY HH:mm")}
                       </TableCell>
                       <TableCell align="center">{flight.duration}</TableCell>
+                      <TableCell align="center">
+                        {flight.economyPrice}$/{flight.businessPrice}$
+                      </TableCell>
                       <TableCell align="center">
                         <IconButton
                           size="large"
@@ -222,7 +250,7 @@ export default function Flights(props) {
                           edge="end"
                           aria-label="account of current user"
                           aria-haspopup="true"
-                          // onClick={() => handleOpenFlightEditDialog(flight.id)}
+                          onClick={() => handleOpenFlightEditDialog(flight.id)}
                           color="inherit"
                           sx={{ color: "#292d3e" }}
                         >
@@ -259,12 +287,26 @@ export default function Flights(props) {
               </DialogActions>
             </Dialog>
             <FlightAddDialog
-              flightDialogOpen={flightDialogOpen}
-              handleCloseFlightDialog={handleCloseFlightAddDialog}
+              flightAddDialogOpen={flightAddDialogOpen}
+              handleCloseFlightAddDialog={handleCloseFlightAddDialog}
+              setFlightChange={setFlightChange}
+              flightChange={flightChange}
               info={info}
               // flight={flight}
               // setFlight={setFlight}
             />
+            {flightEditDialogOpen && (
+              <FlightEditDialog
+                flightEditDialogOpen={flightEditDialogOpen}
+                handleCloseFlightEditDialog={handleCloseFlightEditDialog}
+                selectedFlightToEdit={selectedFlightToEdit}
+                setFlightChange={setFlightChange}
+                flightChange={flightChange}
+                info={info}
+                // flight={flight}
+                // setFlight={setFlight}
+              />
+            )}
             <Pagination
               count={totalPage}
               page={page}

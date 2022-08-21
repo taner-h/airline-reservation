@@ -2,10 +2,12 @@ package com.project.auran.service;
 
 import com.project.auran.model.Airport;
 import com.project.auran.model.City;
-import com.project.auran.model.Country;
 import com.project.auran.repository.AirportRepository;
 import com.project.auran.repository.CityRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -33,8 +35,8 @@ public class AirportService {
         return airport;
     }
 
-    public List<Airport> getAllAirports() {
-        return airportRepository.findAll();
+    public Page<Airport> getAllAirports(Integer page, Integer pageSize, String sortBy) {
+        return airportRepository.findAll(PageRequest.of(page, pageSize, Sort.Direction.ASC, sortBy));
     }
 
 

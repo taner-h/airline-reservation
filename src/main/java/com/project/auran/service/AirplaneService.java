@@ -3,14 +3,15 @@ package com.project.auran.service;
 import com.project.auran.model.Airline;
 import com.project.auran.model.Airplane;
 import com.project.auran.model.AirplaneModel;
-import com.project.auran.model.Airplane;
 import com.project.auran.repository.AirlineRepository;
 import com.project.auran.repository.AirplaneModelRepository;
 import com.project.auran.repository.AirplaneRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -44,8 +45,8 @@ public class AirplaneService {
 
     }
 
-    public List<Airplane> getAirplanes() {
-        return airplaneRepository.findAll();
+    public Page<Airplane> getAirplanes(Integer page, Integer pageSize, String sortBy) {
+        return airplaneRepository.findAll(PageRequest.of(page, pageSize, Sort.Direction.ASC, sortBy));
     }
 
     public void deleteAirplane(Long airplaneId) {

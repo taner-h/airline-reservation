@@ -1,12 +1,12 @@
 package com.project.auran.controller;
 
 import com.project.auran.model.Airline;
+import com.project.auran.model.Flight;
 import com.project.auran.service.AirlineService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @CrossOrigin(origins = "*")
@@ -21,8 +21,11 @@ public class AirlineController {
     }
 
     @GetMapping
-    public List<Airline> getAllAirlines(){
-        return airlineService.getAllAirlines();
+    public Page<Airline> getAirlines(@RequestParam(defaultValue = "0") Integer page,
+                                      @RequestParam(defaultValue = "10") Integer pageSize,
+                                      @RequestParam(defaultValue = "id") String sortBy) {
+
+        return airlineService.getAirlines(page, pageSize, sortBy);
     }
 
     @GetMapping(path = "{airlineId}")

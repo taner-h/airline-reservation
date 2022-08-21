@@ -15,8 +15,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-
-
 @RestController
 @CrossOrigin(origins = "*")
 @RequestMapping("flight")
@@ -31,20 +29,19 @@ public class FlightController {
 
     @PostMapping
     public Flight addFlight(@RequestParam Long airplaneId,
-                            @RequestParam Long destId,
-                            @RequestParam Long srcId,
-                            @RequestBody Flight flight) {
+            @RequestParam Long destId,
+            @RequestParam Long srcId,
+            @RequestBody Flight flight) {
         return flightService.addFlight(airplaneId, destId, srcId, flight);
     }
 
     @GetMapping
     public Page<Flight> getAllFlights(@RequestParam(defaultValue = "0") Integer page,
-                                      @RequestParam(defaultValue = "10") Integer pageSize,
-                                      @RequestParam(defaultValue = "id") String sortBy) {
-
+            @RequestParam(defaultValue = "10") Integer pageSize,
+            @RequestParam(defaultValue = "id") String sortBy) {
         return flightService.getAllFlights(page, pageSize, sortBy);
     }
-    
+
     @Transactional
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     @DeleteMapping(path = "{flightId}")
@@ -52,6 +49,14 @@ public class FlightController {
         flightService.deleteFlight(flightId);
     }
 
+    @PutMapping(path = "{flightId}")
+    public Flight updateFlight(@PathVariable Long flightId,
+            @RequestParam Long airplaneId,
+            @RequestParam Long destId,
+            @RequestParam Long srcId,
+            @RequestBody Flight newFlight) {
+        return flightService.updateFlight(flightId, airplaneId, destId, srcId, newFlight);
+    }
 
     @GetMapping(path = "{flightId}")
     public Flight getFlight(@PathVariable Long flightId) {
@@ -60,15 +65,12 @@ public class FlightController {
 
     @GetMapping(path = "/search")
     public List<Flight> searchFlights(@RequestParam(required = false) Integer page,
-                                      @RequestParam(required = false) Integer pageSize,
-                                      @RequestParam Long srcId,
-                                      @RequestParam Long destId,
-                                      @RequestParam("dateStart")
-                                      @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateStart,
-                                      @RequestParam("dateEnd")
-                                      @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateEnd) {
+            @RequestParam(required = false) Integer pageSize,
+            @RequestParam Long srcId,
+            @RequestParam Long destId,
+            @RequestParam("dateStart") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateStart,
+            @RequestParam("dateEnd") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateEnd) {
         return flightService.searchFlights(srcId, destId, dateStart, dateEnd, page, pageSize);
     }
-
 
 }

@@ -5,9 +5,11 @@ import com.project.auran.model.Country;
 import com.project.auran.repository.AirlineRepository;
 import com.project.auran.repository.CountryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -23,8 +25,8 @@ public class AirlineService {
     @Autowired
     private CountryRepository countryRepository;
 
-    public List<Airline> getAllAirlines() {
-        return airlineRepository.findAll();
+    public Page<Airline> getAirlines(Integer page, Integer pageSize, String sortBy) {
+        return airlineRepository.findAll(PageRequest.of(page, pageSize, Sort.Direction.ASC, sortBy));
     }
 
     public Airline addNewAirline(Long countryId, Airline airline) {

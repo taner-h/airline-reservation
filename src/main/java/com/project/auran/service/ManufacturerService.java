@@ -2,13 +2,13 @@ package com.project.auran.service;
 
 import com.project.auran.model.Manufacturer;
 import com.project.auran.model.Country;
-import com.project.auran.model.Manufacturer;
 import com.project.auran.repository.CountryRepository;
 import com.project.auran.repository.ManufacturerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 import java.util.Optional;
@@ -37,8 +37,8 @@ public class ManufacturerService {
         return manufacturer;
     }
 
-    public List<Manufacturer> getAllManufacturers() {
-        return manufacturerRepository.findAll();
+    public Page<Manufacturer> getAllManufacturers(Integer page, Integer pageSize, String sortBy) {
+        return manufacturerRepository.findAll(PageRequest.of(page, pageSize, Sort.Direction.ASC, sortBy));
     }
 
     public Manufacturer updateManufacturer(Long manufacturerId, String name, String website, Long countryId) {

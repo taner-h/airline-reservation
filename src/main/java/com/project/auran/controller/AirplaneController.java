@@ -2,8 +2,10 @@ package com.project.auran.controller;
 
 import com.project.auran.model.Airplane;
 import com.project.auran.model.Airport;
+import com.project.auran.model.Flight;
 import com.project.auran.service.AirplaneService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,8 +24,10 @@ public class AirplaneController {
     }
 
     @GetMapping
-    public List<Airplane> getAirplanes(){
-        return airplaneService.getAirplanes();
+    public Page<Airplane> getAirplanes(@RequestParam(defaultValue = "0") Integer page,
+                                      @RequestParam(defaultValue = "10") Integer pageSize,
+                                      @RequestParam(defaultValue = "id") String sortBy) {
+        return airplaneService.getAirplanes(page, pageSize, sortBy);
     }
 
     @GetMapping(path = "{airplaneId}")

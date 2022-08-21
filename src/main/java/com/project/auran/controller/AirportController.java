@@ -3,6 +3,7 @@ package com.project.auran.controller;
 import com.project.auran.model.Airport;
 import com.project.auran.service.AirportService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,8 +22,10 @@ public class AirportController {
     }
 
     @GetMapping
-    public List<Airport> getAllAirports(){
-        return airportService.getAllAirports();
+    public Page<Airport> getAllAirports(@RequestParam(defaultValue = "0") Integer page,
+                                        @RequestParam(defaultValue = "10") Integer pageSize,
+                                        @RequestParam(defaultValue = "id") String sortBy){
+        return airportService.getAllAirports(page, pageSize, sortBy);
     }
 
     @GetMapping(path = "{airportId}")

@@ -3,11 +3,13 @@ package com.project.auran.service;
 import com.project.auran.model.Gender;
 import com.project.auran.model.Passenger;
 import com.project.auran.model.Ticket;
-import com.project.auran.repository.FlightRepository;
 import com.project.auran.repository.GenderRepository;
 import com.project.auran.repository.PassengerRepository;
 import com.project.auran.repository.TicketRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -36,8 +38,8 @@ public class PassengerService {
         return passenger;
     }
 
-    public List<Passenger> getPassengers() {
-        return passengerRepository.findAll();
+    public Page<Passenger> getPassengers(Integer page, Integer pageSize, String sortBy) {
+        return passengerRepository.findAll(PageRequest.of(page, pageSize, Sort.Direction.ASC, sortBy));
     }
 
     public Passenger getPassenger(Long passengerId) {
