@@ -7,13 +7,12 @@ import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
 import AccountCircle from "@mui/icons-material/AccountCircle";
-import { styled, createTheme, ThemeProvider } from '@mui/material/styles';
+import { styled, createTheme, ThemeProvider } from "@mui/material/styles";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import { Link } from "react-router-dom";
 import CssBaseline from "@mui/material/CssBaseline";
-import logo from "../images/logo128.png"
-
+import logo from "../images/logo128.png";
 
 export default function NavBar() {
   const [profileMenuOpened, setProfileMenuOpened] = useState(false);
@@ -47,7 +46,7 @@ export default function NavBar() {
   );
 
   return (
-      <Box>
+    <Box>
       <AppBar position="static" sx={{ backgroundColor: "#292d3e" }}>
         <Toolbar>
           {/* <IconButton
@@ -82,9 +81,15 @@ export default function NavBar() {
             </Link>
           </Typography>
 
-          <Button color="inherit" sx={{ marginRight: 1 }}>
-            Book flight
-          </Button>
+          <Link
+            className="text-link"
+            to="/"
+            style={{ textDecoration: "inherit" }}
+          >
+            <Button color="inherit" sx={{ marginRight: 1 }}>
+              Book flight
+            </Button>
+          </Link>
           <Link
             className="text-link"
             to="/admin"
@@ -111,7 +116,6 @@ export default function NavBar() {
         </Toolbar>
       </AppBar>
       {renderMenu}
-      </Box>
-
+    </Box>
   );
 }

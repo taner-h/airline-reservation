@@ -63,14 +63,26 @@ public class FlightController {
         return flightService.getFlight(flightId);
     }
 
+//    @GetMapping(path = "/search")
+//    public List<Flight> searchFlights(@RequestParam(required = false) Integer page,
+//            @RequestParam(required = false) Integer pageSize,
+//            @RequestParam Long srcId,
+//            @RequestParam Long destId,
+//            @RequestParam("dateStart") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateStart,
+//            @RequestParam("dateEnd") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateEnd) {
+//        return flightService.searchFlights(srcId, destId, dateStart, dateEnd, page, pageSize);
+//    }
+
     @GetMapping(path = "/search")
-    public List<Flight> searchFlights(@RequestParam(required = false) Integer page,
-            @RequestParam(required = false) Integer pageSize,
-            @RequestParam Long srcId,
-            @RequestParam Long destId,
-            @RequestParam("dateStart") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateStart,
-            @RequestParam("dateEnd") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateEnd) {
-        return flightService.searchFlights(srcId, destId, dateStart, dateEnd, page, pageSize);
+    public Page<Flight> searchFlights(@RequestParam(defaultValue = "0") Integer page,
+                                      @RequestParam(defaultValue = "10") Integer pageSize,
+                                      @RequestParam(defaultValue = "id") String sortBy,
+                                      @RequestParam Long srcId,
+                                      @RequestParam Long destId,
+                                      @RequestParam("dateStart") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateStart,
+                                      @RequestParam("dateEnd") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateEnd) {
+        return flightService.searchFlights(page, pageSize, sortBy, srcId, destId, dateStart, dateEnd);
+
     }
 
 }

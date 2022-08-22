@@ -7,7 +7,9 @@ import React, { useEffect, useState } from "react";
 import DeleteIcon from "@mui/icons-material/Delete";
 import FlightTakeoffIcon from "@mui/icons-material/FlightTakeoff";
 import Button from "@mui/material/Button";
+import { StyledTableCell, StyledTableRow } from "./StyledTable";
 import Fab from "@mui/material/Fab";
+import { tableCellClasses } from "@mui/material/TableCell";
 import AddIcon from "@mui/icons-material/Add";
 import Pagination from "@mui/material/Pagination";
 import EditIcon from "@mui/icons-material/Edit";
@@ -104,15 +106,15 @@ export default function Airlines(props) {
               <Table aria-label="flights table">
                 <TableHead>
                   <TableRow>
-                    <TableCell>Name</TableCell>
-                    <TableCell align="center">Website</TableCell>
-                    <TableCell align="center">Country</TableCell>
-                    <TableCell align="center">Actions</TableCell>
+                    <StyledTableCell>Name</StyledTableCell>
+                    <StyledTableCell align="center">Website</StyledTableCell>
+                    <StyledTableCell align="center">Country</StyledTableCell>
+                    <StyledTableCell align="center">Actions</StyledTableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
                   {airlines.map((airline) => (
-                    <TableRow
+                    <StyledTableRow
                       key={airline.id}
                       sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
                     >
@@ -147,7 +149,7 @@ export default function Airlines(props) {
                           <EditIcon />
                         </IconButton>
                       </TableCell>
-                    </TableRow>
+                    </StyledTableRow>
                   ))}
                 </TableBody>
               </Table>

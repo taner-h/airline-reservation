@@ -3,6 +3,7 @@ import FlightAddDialog from "./FlightAddDialog";
 import FlightEditDialog from "./FlightEditDialog";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import NavBar from "./NavBar";
+import { StyledTableCell, StyledTableRow } from "./StyledTable";
 import React, { useEffect, useState } from "react";
 import DeleteIcon from "@mui/icons-material/Delete";
 import FlightTakeoffIcon from "@mui/icons-material/FlightTakeoff";
@@ -106,18 +107,20 @@ export default function Airplanes(props) {
               <Table aria-label="flights table">
                 <TableHead>
                   <TableRow>
-                    <TableCell>Registration Number</TableCell>
-                    <TableCell align="center">Airline</TableCell>
-                    <TableCell align="center">Manufacturer</TableCell>
-                    <TableCell align="center">Model</TableCell>
-                    <TableCell align="center">Type</TableCell>
-                    <TableCell align="center">Seat Count</TableCell>
-                    <TableCell align="center">Actions</TableCell>
+                    <StyledTableCell>Registration Number</StyledTableCell>
+                    <StyledTableCell align="center">Airline</StyledTableCell>
+                    <StyledTableCell align="center">
+                      Manufacturer
+                    </StyledTableCell>
+                    <StyledTableCell align="center">Model</StyledTableCell>
+                    <StyledTableCell align="center">Type</StyledTableCell>
+                    <StyledTableCell align="center">Seat Count</StyledTableCell>
+                    <StyledTableCell align="center">Actions</StyledTableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
                   {airplanes.map((airplane) => (
-                    <TableRow
+                    <StyledTableRow
                       key={airplane.id}
                       sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
                     >
@@ -167,7 +170,7 @@ export default function Airplanes(props) {
                           <EditIcon />
                         </IconButton>
                       </TableCell>
-                    </TableRow>
+                    </StyledTableRow>
                   ))}
                 </TableBody>
               </Table>

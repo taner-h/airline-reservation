@@ -9,6 +9,7 @@ import FlightTakeoffIcon from "@mui/icons-material/FlightTakeoff";
 import Button from "@mui/material/Button";
 import Fab from "@mui/material/Fab";
 import AddIcon from "@mui/icons-material/Add";
+import { StyledTableCell, StyledTableRow } from "./StyledTable";
 import Pagination from "@mui/material/Pagination";
 import EditIcon from "@mui/icons-material/Edit";
 import Box from "@mui/material/Box";
@@ -104,15 +105,15 @@ export default function Manufacturers(props) {
               <Table aria-label="flights table">
                 <TableHead>
                   <TableRow>
-                    <TableCell>Name</TableCell>
-                    <TableCell align="center">Website</TableCell>
-                    <TableCell align="center">Country</TableCell>
-                    <TableCell align="center">Actions</TableCell>
+                    <StyledTableCell>Name</StyledTableCell>
+                    <StyledTableCell align="center">Website</StyledTableCell>
+                    <StyledTableCell align="center">Country</StyledTableCell>
+                    <StyledTableCell align="center">Actions</StyledTableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
                   {manufacturers.map((manufacturer) => (
-                    <TableRow
+                    <StyledTableRow
                       key={manufacturer.id}
                       sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
                     >
@@ -149,7 +150,7 @@ export default function Manufacturers(props) {
                           <EditIcon />
                         </IconButton>
                       </TableCell>
-                    </TableRow>
+                    </StyledTableRow>
                   ))}
                 </TableBody>
               </Table>

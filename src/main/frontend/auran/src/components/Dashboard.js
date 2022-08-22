@@ -41,7 +41,7 @@ export default function Dashboard(props) {
           }}
         >
           <Toolbar />
-          <Container maxWidth="lg" sx={{ mt: 6, mb: 6 }}>
+          <Container maxWidth="lg" sx={{ mt: 6, mb: 9 }}>
             <Typography
               variant="h3"
               // align="left"

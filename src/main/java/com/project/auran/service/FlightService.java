@@ -8,18 +8,22 @@ import com.project.auran.repository.AirplaneRepository;
 import com.project.auran.repository.AirportRepository;
 import com.project.auran.repository.FlightRepository;
 import com.project.auran.repository.TicketRepository;
+import net.bytebuddy.asm.Advice;
 import org.hibernate.Filter;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -101,32 +105,40 @@ public class FlightService {
 				.orElseThrow(() -> new IllegalStateException("no flight found with given id"));
 	}
 
-	public List<Flight> searchFlights(Long srcId, Long destId, LocalDate dateStart,
-			LocalDate dateEnd, Integer page, Integer pageSize) {
-
-		//
-		Session session = entityManager.unwrap(Session.class);
-		Filter filter = session.enableFilter("flightSearch");
-		filter.setParameter("dateStart", dateStart);
-		filter.setParameter("dateEnd", dateEnd);
-		// String hql = "from Flight f where f.destinationAirport.id = :destId and
-		// f.sourceAirport.id = :srcId";
-		Query query = session.createQuery(
-				"from Flight f where f.destinationAirport.id = :destId and f.sourceAirport.id = :srcId order by f.id");
-		query.setParameter("destId", destId);
-		query.setParameter("srcId", srcId);
-		if (page != null)
-			query.setFirstResult((page - 1) * pageSize);
-		if (pageSize != null)
-			query.setMaxResults(pageSize);
-		List<Flight> response = query.list();
-		session.close();
-		return response;
-
-		// return entityManager.createQuery("select f from Flight f where
-		// f.destinationAirport.id = :destId and f.sourceAirport.id = :srcId",
-		// Flight.class).getResultList();
+	public Page<Flight> searchFlights(Integer page, Integer pageSize, String sortBy, Long srcId, Long destId, LocalDate dateStart, LocalDate dateEnd) {
+		Pageable pageable = PageRequest.of(page, pageSize, Sort.Direction.ASC, sortBy);
+		Airport destAirport = airportRepository.findAirportById(destId)
+				.orElseThrow(() -> new IllegalStateException("no airport found with given id"));
+		Airport srcAirport = airportRepository.findAirportById(srcId)
+				.orElseThrow(() -> new IllegalStateException("no airport found with given id"));
+		LocalDateTime takeoff1 = dateStart.atStartOfDay();
+		LocalDateTime takeoff2 = LocalDateTime.of(dateEnd, LocalTime.MAX);
+		return flightRepository.findAllByDestinationAirportAndSourceAirportAndTakeoffBetween(destAirport, srcAirport,takeoff1, takeoff2, pageable);
 
 	}
+
+//	public List<Flight> searchFlights(Long srcId, Long destId, LocalDate dateStart,
+//			LocalDate dateEnd, Integer page, Integer pageSize) {
+//
+//		//
+//		Session session = entityManager.unwrap(Session.class);
+//		Filter filter = session.enableFilter("flightSearch");
+//		filter.setParameter("dateStart", dateStart);
+//		filter.setParameter("dateEnd", dateEnd);
+//		// String hql = "from Flight f where f.destinationAirport.id = :destId and
+//		// f.sourceAirport.id = :srcId";
+//		Query query = session.createQuery(
+//				"from Flight f where f.destinationAirport.id = :destId and f.sourceAirport.id = :srcId order by f.id");
+//		query.setParameter("destId", destId);
+//		query.setParameter("srcId", srcId);
+//		if (page != null)
+//			query.setFirstResult((page - 1) * pageSize);
+//		if (pageSize != null)
+//			query.setMaxResults(pageSize);
+//		List<Flight> response = query.list();
+//		session.close();
+//		return response;
+//
+//	}
 
 }

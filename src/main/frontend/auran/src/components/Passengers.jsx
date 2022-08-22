@@ -11,6 +11,7 @@ import Fab from "@mui/material/Fab";
 import AddIcon from "@mui/icons-material/Add";
 import Pagination from "@mui/material/Pagination";
 import EditIcon from "@mui/icons-material/Edit";
+import { StyledTableCell, StyledTableRow } from "./StyledTable";
 import Box from "@mui/material/Box";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
@@ -104,16 +105,16 @@ export default function Passengers(props) {
               <Table aria-label="flights table">
                 <TableHead>
                   <TableRow>
-                    <TableCell>PNR</TableCell>
-                    <TableCell align="center">Name</TableCell>
-                    <TableCell align="center">Surname</TableCell>
-                    <TableCell align="center">Gender</TableCell>
-                    <TableCell align="center">Actions</TableCell>
+                    <StyledTableCell>PNR</StyledTableCell>
+                    <StyledTableCell align="center">Name</StyledTableCell>
+                    <StyledTableCell align="center">Surname</StyledTableCell>
+                    <StyledTableCell align="center">Gender</StyledTableCell>
+                    <StyledTableCell align="center">Actions</StyledTableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
                   {passengers.map((passenger) => (
-                    <TableRow
+                    <StyledTableRow
                       key={passenger.id}
                       sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
                     >
@@ -149,7 +150,7 @@ export default function Passengers(props) {
                           <EditIcon />
                         </IconButton>
                       </TableCell>
-                    </TableRow>
+                    </StyledTableRow>
                   ))}
                 </TableBody>
               </Table>

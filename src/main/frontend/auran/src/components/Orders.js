@@ -2,6 +2,7 @@ import * as React from "react";
 import Link from "@mui/material/Link";
 import Table from "@mui/material/Table";
 import Typography from "@mui/material/Typography";
+import { StyledTableCell, StyledTableRow } from "./StyledTable";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
 import TableHead from "@mui/material/TableHead";

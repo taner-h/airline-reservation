@@ -1,5 +1,7 @@
 import DashboardNavBar from "./DashboardNavBar";
+import { styled } from "@mui/material/styles";
 import FlightAddDialog from "./FlightAddDialog";
+import { StyledTableCell, StyledTableRow } from "./StyledTable";
 import FlightEditDialog from "./FlightEditDialog";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import NavBar from "./NavBar";
@@ -10,6 +12,7 @@ import Button from "@mui/material/Button";
 import Fab from "@mui/material/Fab";
 import AddIcon from "@mui/icons-material/Add";
 import Pagination from "@mui/material/Pagination";
+import { tableCellClasses } from "@mui/material/TableCell";
 import EditIcon from "@mui/icons-material/Edit";
 import Box from "@mui/material/Box";
 import Dialog from "@mui/material/Dialog";
@@ -104,19 +107,21 @@ export default function Tickets(props) {
               <Table aria-label="flights table">
                 <TableHead>
                   <TableRow>
-                    <TableCell>E-ticket Number</TableCell>
-                    <TableCell align="center">Flight Code</TableCell>
-                    <TableCell align="center">Passenger</TableCell>
-                    <TableCell align="center">PNR</TableCell>
-                    <TableCell align="center">Class</TableCell>
-                    <TableCell align="center">Price</TableCell>
-                    <TableCell align="center">Seat</TableCell>
-                    <TableCell align="center">Actions</TableCell>
+                    <StyledTableCell>E-ticket Number</StyledTableCell>
+                    <StyledTableCell align="center">
+                      Flight Code
+                    </StyledTableCell>
+                    <StyledTableCell align="center">Passenger</StyledTableCell>
+                    <StyledTableCell align="center">PNR</StyledTableCell>
+                    <StyledTableCell align="center">Class</StyledTableCell>
+                    <StyledTableCell align="center">Price</StyledTableCell>
+                    <StyledTableCell align="center">Seat</StyledTableCell>
+                    <StyledTableCell align="center">Actions</StyledTableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
                   {tickets.map((ticket) => (
-                    <TableRow
+                    <StyledTableRow
                       key={ticket.id}
                       sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
                     >
@@ -157,7 +162,7 @@ export default function Tickets(props) {
                           <EditIcon />
                         </IconButton>
                       </TableCell>
-                    </TableRow>
+                    </StyledTableRow>
                   ))}
                 </TableBody>
               </Table>

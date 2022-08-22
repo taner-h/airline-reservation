@@ -7,11 +7,13 @@ import React, { useEffect, useState } from "react";
 import DeleteIcon from "@mui/icons-material/Delete";
 import FlightTakeoffIcon from "@mui/icons-material/FlightTakeoff";
 import Button from "@mui/material/Button";
+import { tableCellClasses } from "@mui/material/TableCell";
 import Fab from "@mui/material/Fab";
 import AddIcon from "@mui/icons-material/Add";
 import Pagination from "@mui/material/Pagination";
 import EditIcon from "@mui/icons-material/Edit";
 import Box from "@mui/material/Box";
+import { StyledTableCell, StyledTableRow } from "./StyledTable";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
@@ -104,16 +106,16 @@ export default function Airports(props) {
               <Table aria-label="flights table">
                 <TableHead>
                   <TableRow>
-                    <TableCell>Name</TableCell>
-                    <TableCell align="center">Code</TableCell>
-                    <TableCell align="center">Country</TableCell>
-                    <TableCell align="center">City</TableCell>
-                    <TableCell align="center">Actions</TableCell>
+                    <StyledTableCell>Name</StyledTableCell>
+                    <StyledTableCell align="center">Code</StyledTableCell>
+                    <StyledTableCell align="center">Country</StyledTableCell>
+                    <StyledTableCell align="center">City</StyledTableCell>
+                    <StyledTableCell align="center">Actions</StyledTableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
                   {airports.map((airport) => (
-                    <TableRow
+                    <StyledTableRow
                       key={airport.id}
                       sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
                     >
@@ -149,7 +151,7 @@ export default function Airports(props) {
                           <EditIcon />
                         </IconButton>
                       </TableCell>
-                    </TableRow>
+                    </StyledTableRow>
                   ))}
                 </TableBody>
               </Table>
