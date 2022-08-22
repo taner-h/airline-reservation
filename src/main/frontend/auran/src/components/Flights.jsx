@@ -232,10 +232,10 @@ export default function Flights(props) {
                         {flight.code}
                       </TableCell>
                       <TableCell align="center">
-                        {flight.destinationAirport.name}
+                        {flight.sourceAirport.name}
                       </TableCell>
                       <TableCell align="center">
-                        {flight.sourceAirport.name}
+                        {flight.destinationAirport.name}
                       </TableCell>
                       <TableCell align="center">
                         {moment(flight.takeoff).format("DD/MM/YYYY HH:mm")}
