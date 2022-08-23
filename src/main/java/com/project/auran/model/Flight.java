@@ -10,6 +10,7 @@ import org.hibernate.annotations.ParamDef;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @Entity
@@ -45,7 +46,8 @@ public class Flight {
     private Integer economyPrice;
 
     private String code;
-
     private String gate;
+
+
 
 }

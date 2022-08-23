@@ -1,11 +1,14 @@
 import DashboardNavBar from "./DashboardNavBar";
 import FlightAddDialog from "./FlightAddDialog";
 import FlightEditDialog from "./FlightEditDialog";
+import update from "immutability-helper";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import NavBar from "./NavBar";
 import React, { useEffect, useState } from "react";
 import { StyledTableCell, StyledTableRow } from "./StyledTable";
 import { Link } from "react-router-dom";
+import { FormControl, InputLabel, Select, TextField } from "@mui/material";
+import MenuItem from "@mui/material/MenuItem";
 import { tableCellClasses } from "@mui/material/TableCell";
 import DeleteIcon from "@mui/icons-material/Delete";
 import FlightTakeoffIcon from "@mui/icons-material/FlightTakeoff";
@@ -14,6 +17,10 @@ import Fab from "@mui/material/Fab";
 import AddIcon from "@mui/icons-material/Add";
 import Pagination from "@mui/material/Pagination";
 import EditIcon from "@mui/icons-material/Edit";
+import Accordion from "@mui/material/Accordion";
+import AccordionDetails from "@mui/material/AccordionDetails";
+import AccordionSummary from "@mui/material/AccordionSummary";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import Box from "@mui/material/Box";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
@@ -42,16 +49,33 @@ export default function FlightSearch(props) {
   const [totalPage, setTotalPage] = useState(10);
   const [flights, setFlights] = useState([]);
   const [openErrorDialog, setOpenErrorDialog] = useState(false);
+  const [openSelectDialog, setOpenSelectDialog] = useState(false);
   const [info, setInfo] = useState({
     airplanes: [],
     airports: [],
   });
-  const [flightClass, setFlightClass] = useState("Economy");
-  const [ticketNumber, setTicketNumber] = useState(1);
+  const [flightClass, setFlightClass] = useState("");
+  const [ticketNumber, setTicketNumber] = useState();
+  const [selectedFlight, setSelectedFlight] = useState();
+  const [tickets, setTickets] = useState([]);
 
   const { filters, setFilters } = props;
+  const [expanded, setExpanded] = React.useState(false);
 
-  const handleCloseDialog = () => {
+  const handleChange = (panel) => (event, isExpanded) => {
+    setExpanded(isExpanded ? panel : false);
+  };
+
+  const handleCloseSelectDialog = () => {
+    setOpenSelectDialog(false);
+  };
+
+  const handleOpenSelectDialog = (flight) => {
+    setSelectedFlight(flight);
+    setOpenSelectDialog(true);
+  };
+
+  const handleCloseErrorDialog = () => {
     setOpenErrorDialog(false);
   };
 
@@ -108,7 +132,7 @@ export default function FlightSearch(props) {
       setFlights(jsonRes.content);
       setTotalPage(jsonRes.totalPages);
       setFlightClass(filters.class);
-      setTicketNumber(filters.numberOfTickets);
+      setTicketNumber(parseInt(filters.numberOfTickets));
       clearFilters();
 
       // console.log(flights)
@@ -117,6 +141,20 @@ export default function FlightSearch(props) {
       console.error(err.message);
     }
   };
+  const options = [
+    "1A",
+    "1B",
+    "1C",
+    "1D",
+    "2A",
+    "2B",
+    "2C",
+    "2D",
+    "3A",
+    "3B",
+    "3C",
+    "3D",
+  ];
 
   const clearFilters = () => {
     setFilters({
@@ -125,16 +163,27 @@ export default function FlightSearch(props) {
       dateStart: null,
       dateEnd: null,
       class: "",
-      numberOfTickets: 1,
+      numberOfTickets: "",
     });
   };
 
   useEffect(() => {
-    getFlights();
     // console.log(info.airplanes.length);
     // console.log(info.airports.length);
     // setFlightChange(false);
-    if (info.airplanes.length === 0 && info.airports.length === 0) getInfo();
+    if (info.airplanes.length === 0 && info.airports.length === 0) {
+      getInfo();
+      setTickets(
+        new Array(parseInt(filters.numberOfTickets)).fill({
+          name: "",
+          surname: "",
+          age: "",
+          nationalId: "",
+          seat: "",
+        })
+      );
+    }
+    getFlights();
   }, [page]);
 
   return (
@@ -221,6 +270,7 @@ export default function FlightSearch(props) {
                             color: "#d8dee9",
                             backgroundColor: "#424864",
                           }}
+                          onClick={() => handleOpenSelectDialog(flight)}
                         >
                           Select
                         </Button>
@@ -230,7 +280,7 @@ export default function FlightSearch(props) {
                 </TableBody>
               </Table>
             </TableContainer>
-            <Dialog open={openErrorDialog} onClose={handleCloseDialog}>
+            <Dialog open={openErrorDialog} onClose={handleCloseErrorDialog}>
               <DialogTitle id="alert-dialog-title">
                 No flights are found with the chosen filters.
               </DialogTitle>
@@ -250,6 +300,123 @@ export default function FlightSearch(props) {
                 </Link>
               </DialogActions>
             </Dialog>
+
+            {openSelectDialog && (
+              <Dialog open={openSelectDialog} onClose={handleCloseSelectDialog}>
+                <DialogTitle
+                  sx={{ backgroundColor: "#eceff4" }}
+                  id="alert-dialog-title"
+                >
+                  Choose seats and enter passenger info below.
+                </DialogTitle>
+
+                <DialogContent sx={{ backgroundColor: "#eceff4" }}>
+                  {tickets.map((ticket, index) => (
+                    <Accordion
+                      expanded={expanded === index}
+                      onChange={handleChange(index)}
+                      key={index}
+                    >
+                      <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                        <Typography sx={{ width: "33%", flexShrink: 0 }}>
+                          Passenger {index + 1}
+                        </Typography>
+                        <Typography sx={{ color: "text.secondary" }}>
+                          Choose your seat.
+                        </Typography>
+                      </AccordionSummary>
+                      <AccordionDetails>
+                        <div>
+                          <FormControl
+                            sx={{ width: 200, marginX: 2, marginY: 2 }}
+                          >
+                            <TextField
+                              id="name"
+                              label="Name"
+                              // value={tickets[index].name}
+                              onChange={(e) => {
+                                setTickets(
+                                  update(tickets, {
+                                    [index]: { name: { $set: e.target.value } },
+                                  })
+                                );
+                              }}
+                            />
+                          </FormControl>
+                          <FormControl
+                            sx={{ width: 200, marginX: 2, marginY: 2 }}
+                          >
+                            <TextField
+                              id="surname"
+                              label="Surname"
+                              // value={tickets[index].surname}
+                              onChange={(e) => {
+                                setTickets(
+                                  update(tickets, {
+                                    [index]: {
+                                      surname: { $set: e.target.value },
+                                    },
+                                  })
+                                );
+                              }}
+                            />
+                          </FormControl>
+                        </div>
+                        <div>
+                          <FormControl
+                            sx={{ width: 200, marginX: 2, marginY: 2 }}
+                          >
+                            <TextField
+                              id="nationalId"
+                              label="National Id"
+                              // value={tickets[index].name}
+                              onChange={(e) => {
+                                setTickets(
+                                  update(tickets, {
+                                    [index]: {
+                                      nationalId: { $set: e.target.value },
+                                    },
+                                  })
+                                );
+                              }}
+                            />
+                          </FormControl>
+                          <FormControl
+                            sx={{ width: 200, marginX: 2, marginY: 2 }}
+                          >
+                            <InputLabel id="seat">Seat</InputLabel>
+                            <Select
+                              id="seatSelect"
+                              // value={tickets[index].seat}
+                              label="Seat"
+                              onChange={(e) => {
+                                setTickets(
+                                  update(tickets, {
+                                    [index]: {
+                                      seat: { $set: e.target.value },
+                                    },
+                                  })
+                                );
+                              }}
+                            >
+                              {options.map((option) => (
+                                <MenuItem key={option} value={option}>
+                                  {option}
+                                </MenuItem>
+                              ))}
+                            </Select>
+                          </FormControl>
+                        </div>
+                      </AccordionDetails>
+                    </Accordion>
+                  ))}
+                </DialogContent>
+                <DialogActions sx={{ backgroundColor: "#eceff4" }}>
+                  <Button autoFocus>Proceed</Button>
+                </DialogActions>
+              </Dialog>
+            )}
+
             <Pagination
               count={totalPage}
               page={page}

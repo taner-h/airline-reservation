@@ -30,8 +30,10 @@ public class AirplaneModel {
     private float wingSpan;
     private float height;
     private float length;
-    private Integer totalSeatCount;
-    private Integer passengerSeatCount;
+    private Integer businessSeatRow;
+    private Integer businessSeatColumn;
+    private Integer economySeatRow;
+    private Integer economySeatColumn;
 
 
 

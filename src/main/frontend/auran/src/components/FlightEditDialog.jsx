@@ -70,7 +70,7 @@ export default function FlightEditDialog(props) {
       economyPrice,
     } = flight;
 
-    const takeoff = moment(takeoffMoment).format("YYYY-MM-DDTHH:MM:SS");
+    const takeoff = moment(takeoffMoment).format("YYYY-MM-DDTHH:mm:SS");
     const body = {
       takeoff,
       duration,

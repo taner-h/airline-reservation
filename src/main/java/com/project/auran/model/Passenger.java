@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Data
 @Entity
@@ -23,4 +24,5 @@ public class Passenger {
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name="gender_id")
     private Gender gender;
+
 }

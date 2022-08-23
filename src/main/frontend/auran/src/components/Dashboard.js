@@ -41,7 +41,7 @@ export default function Dashboard(props) {
           }}
         >
           <Toolbar />
-          <Container maxWidth="lg" sx={{ mt: 6, mb: 9 }}>
+          <Container maxWidth="lg" sx={{ mt: 4, mb: 9 }}>
             <Typography
               variant="h3"
               // align="left"
@@ -49,6 +49,15 @@ export default function Dashboard(props) {
               color="#292d3e"
             >
               Dashboard
+            </Typography>
+
+            <Typography
+              variant="h6"
+              // align="left"
+              sx={{ fontWeight: "400", mb: 3 }}
+              color="#292d3e"
+            >
+              View statistics and summary.
             </Typography>
             <Grid container spacing={3}>
               {/* Recent Deposits */}

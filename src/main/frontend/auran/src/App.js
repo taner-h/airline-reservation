@@ -17,13 +17,22 @@ import Homepage from "./components/Homepage";
 function App() {
   const [isAdmin, setIsAdmin] = React.useState(true);
   const [filters, setFilters] = useState({
-    destId: "",
-    srcId: "",
-    dateStart: null,
-    dateEnd: null,
-    class: "",
-    numberOfTickets: 1,
+    destId: 4,
+    srcId: 1,
+    dateStart: "2022-08-01",
+    dateEnd: "2022-08-31",
+    class: "Economy",
+    numberOfTickets: "3",
   });
+
+  // const [filters, setFilters] = useState({
+  //   destId: "",
+  //   srcId: "",
+  //   dateStart: null,
+  //   dateEnd: null,
+  //   class: "",
+  //   numberOfTickets: "",
+  // });
 
   return (
     <div className="App">

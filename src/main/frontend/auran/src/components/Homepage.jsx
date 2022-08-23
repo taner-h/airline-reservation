@@ -89,7 +89,25 @@ export default function Homepage(props) {
       >
         <NavBar />
         <Toolbar />
-        <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+        <Container maxWidth="md" sx={{ mb: 4 }}>
+          <Typography
+            variant="h3"
+            // align="left"
+            sx={{ fontWeight: "500", mb: 3 }}
+            color="#292d3e"
+          >
+            Book flight
+          </Typography>
+
+          <Typography
+            variant="h6"
+            // align="left"
+            sx={{ fontWeight: "400", mb: 3 }}
+            color="#292d3e"
+          >
+            Filter and search your flight below.
+          </Typography>
+
           <Grid container spacing={3}>
             {/* Recent Deposits */}
             <Grid item xs={12}>
@@ -102,7 +120,7 @@ export default function Homepage(props) {
                   // color: "#d8dee9"
                 }}
               >
-                <Typography
+                {/* <Typography
                   component="h2"
                   variant="h5"
                   // color="primary"
@@ -110,7 +128,7 @@ export default function Homepage(props) {
                   gutterBottom
                 >
                   Book a flight
-                </Typography>
+                </Typography> */}
 
                 <div>
                   <FormControl sx={{ width: 300, marginX: 2, marginY: 2 }}>

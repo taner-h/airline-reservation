@@ -63,7 +63,7 @@ export default function FlightAddDialog(props) {
       businessPrice,
     } = flight;
 
-    const takeoff = moment(takeoffMoment).format("YYYY-MM-DDTHH:MM:SS");
+    const takeoff = moment(takeoffMoment).format("YYYY-MM-DDTHH:mm:SS");
     const body = {
       takeoff,
       duration,
