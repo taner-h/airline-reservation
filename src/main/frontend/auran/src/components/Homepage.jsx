@@ -58,15 +58,15 @@ export default function Homepage(props) {
     // return true;
 
     for (var filter in filters) {
-      if (filters[filter] == null || filters[filter] == "") return false;
+      if (filters[filter] == null || filters[filter] == "") return true;
     }
-    return true;
+    return false;
   };
 
   useEffect(() => {
     if (airports.length === 0) getAirports();
     // console.log(info.airplanes.length);
-    setFilterIsFull(filterHasEmptyValue());
+    setFilterIsFull(!filterHasEmptyValue());
   }, [filters]);
 
   return (

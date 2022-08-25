@@ -7,14 +7,19 @@ import NavBar from "./NavBar";
 import React, { useEffect, useState } from "react";
 import { StyledTableCell, StyledTableRow } from "./StyledTable";
 import { Link } from "react-router-dom";
+import CreditCardIcon from "@mui/icons-material/CreditCard";
 import { FormControl, InputLabel, Select, TextField } from "@mui/material";
 import MenuItem from "@mui/material/MenuItem";
+import Divider from "@mui/material/Divider";
 import { tableCellClasses } from "@mui/material/TableCell";
 import DeleteIcon from "@mui/icons-material/Delete";
 import FlightTakeoffIcon from "@mui/icons-material/FlightTakeoff";
 import Button from "@mui/material/Button";
 import Fab from "@mui/material/Fab";
 import AddIcon from "@mui/icons-material/Add";
+import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import Pagination from "@mui/material/Pagination";
 import EditIcon from "@mui/icons-material/Edit";
 import Accordion from "@mui/material/Accordion";
@@ -23,6 +28,8 @@ import AccordionSummary from "@mui/material/AccordionSummary";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import Box from "@mui/material/Box";
 import Dialog from "@mui/material/Dialog";
+import Input from "@mui/material/Input";
+import InputAdornment from "@mui/material/InputAdornment";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
@@ -50,6 +57,7 @@ export default function FlightSearch(props) {
   const [flights, setFlights] = useState([]);
   const [openErrorDialog, setOpenErrorDialog] = useState(false);
   const [openSelectDialog, setOpenSelectDialog] = useState(false);
+  const [openSummaryDialog, setOpenSummaryDialog] = useState(false);
   const [info, setInfo] = useState({
     airplanes: [],
     airports: [],
@@ -58,6 +66,8 @@ export default function FlightSearch(props) {
   const [ticketNumber, setTicketNumber] = useState();
   const [selectedFlight, setSelectedFlight] = useState();
   const [tickets, setTickets] = useState([]);
+  const [ticketsFull, setTicketsFull] = useState(false);
+  const [passengers, setPassengers] = useState([]);
 
   const { filters, setFilters } = props;
   const [expanded, setExpanded] = React.useState(false);
@@ -68,6 +78,7 @@ export default function FlightSearch(props) {
 
   const handleCloseSelectDialog = () => {
     setOpenSelectDialog(false);
+    // setTicketsEmpty();
   };
 
   const handleOpenSelectDialog = (flight) => {
@@ -78,6 +89,30 @@ export default function FlightSearch(props) {
   const handleCloseErrorDialog = () => {
     setOpenErrorDialog(false);
   };
+
+  const handleCloseSummaryDialog = () => {
+    setOpenSummaryDialog(false);
+  };
+
+  const handleOpenSummaryDialog = () => {
+    setOpenSummaryDialog(true);
+  };
+
+  const ticketsHaveEmptyValue = () => {
+    for (var ticket in tickets) {
+      for (var item in tickets[ticket]) {
+        // console.log(tickets[ticket][item]);
+        // console.log(tickets[ticket][item]);
+        if (tickets[ticket][item] == null || tickets[ticket][item] == "")
+          return true;
+      }
+    }
+    return false;
+  };
+
+  useEffect(() => {
+    setTicketsFull(!ticketsHaveEmptyValue());
+  }, [tickets]);
 
   const getInfo = async () => {
     try {
@@ -167,6 +202,111 @@ export default function FlightSearch(props) {
     });
   };
 
+  const calculateCost = () => {
+    if (flightClass === "Economy")
+      return ticketNumber * selectedFlight.economyPrice;
+    else return ticketNumber * selectedFlight.businessPrice;
+  };
+
+  const setTicketsEmpty = () => {
+    setTickets(
+      new Array(parseInt(ticketNumber)).fill({
+        name: "",
+        surname: "",
+        dob: null,
+        gender: "",
+        nationalId: "",
+        seat: "",
+      })
+    );
+  };
+
+  const checkIfPassengerExist = async (nationalId) => {
+    try {
+      const response = await fetch(
+        `http://localhost:8080/passenger/nationalId/${nationalId}`,
+        {
+          method: "GET",
+        }
+      );
+
+      const responseJson = await response.json();
+      if (responseJson) return responseJson;
+      else return false;
+    } catch (error) {
+      console.error(error.message);
+    }
+  };
+
+  const handlePassengerSubmit = () => {
+    tickets.map(async (ticket) => {
+      let response = await checkIfPassengerExist(ticket.nationalId);
+      if (response) setPassengers((passengers) => [...passengers, response]);
+      else {
+        const body = {
+          name: ticket.name,
+          surname: ticket.surname,
+          nationalId: ticket.nationalId,
+          pnr: Array.from(Array(8), () =>
+            Math.floor(Math.random() * 36)
+              .toString(36)
+              .toUpperCase()
+          ).join(""),
+        };
+
+        try {
+          const request = await fetch(
+            `http://localhost:8080/passenger?genderId=${ticket.gender}`,
+            {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(body),
+            }
+          );
+
+          const response = await request.json();
+
+          setPassengers((passengers) => [...passengers, response]);
+        } catch (error) {}
+      }
+    });
+    handleCloseSelectDialog();
+    handleOpenSummaryDialog();
+  };
+
+  const handleSubmitPayment = () => {
+    tickets.map(async (ticket, index) => {
+      const body = {
+        eticket: Array.from(Array(8), () =>
+          Math.floor(Math.random() * 36)
+            .toString(36)
+            .toUpperCase()
+        ).join(""),
+        seat: ticket.seat,
+        flightClass,
+        price:
+          flightClass === "Economy"
+            ? selectedFlight.economyPrice
+            : selectedFlight.businessPrice,
+      };
+
+      try {
+        const response = await fetch(
+          `http://localhost:8080/ticket?flightId=${selectedFlight.id}&passengerId=${passengers[index].id}`,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(body),
+          }
+        );
+      } catch (err) {
+        console.error(err.message);
+      }
+    });
+
+    handleCloseSummaryDialog();
+  };
+
   useEffect(() => {
     // console.log(info.airplanes.length);
     // console.log(info.airports.length);
@@ -177,11 +317,15 @@ export default function FlightSearch(props) {
         new Array(parseInt(filters.numberOfTickets)).fill({
           name: "",
           surname: "",
-          age: "",
+          dob: null,
+          gender: "",
           nationalId: "",
           seat: "",
         })
       );
+
+      // setPassengers();
+      // setTicketsEmpty();
     }
     getFlights();
   }, [page]);
@@ -333,7 +477,7 @@ export default function FlightSearch(props) {
                             <TextField
                               id="name"
                               label="Name"
-                              // value={tickets[index].name}
+                              value={tickets[index].name}
                               onChange={(e) => {
                                 setTickets(
                                   update(tickets, {
@@ -349,7 +493,7 @@ export default function FlightSearch(props) {
                             <TextField
                               id="surname"
                               label="Surname"
-                              // value={tickets[index].surname}
+                              value={tickets[index].surname}
                               onChange={(e) => {
                                 setTickets(
                                   update(tickets, {
@@ -362,6 +506,63 @@ export default function FlightSearch(props) {
                             />
                           </FormControl>
                         </div>
+
+                        <div>
+                          <FormControl
+                            sx={{ width: 200, marginX: 2, marginY: 2 }}
+                          >
+                            <InputLabel id="gender">Gender</InputLabel>
+                            <Select
+                              id="genderSelect"
+                              value={tickets[index].gender}
+                              label="Gender"
+                              onChange={(e) => {
+                                setTickets(
+                                  update(tickets, {
+                                    [index]: {
+                                      gender: { $set: e.target.value },
+                                    },
+                                  })
+                                );
+                              }}
+                            >
+                              <MenuItem key={"M"} value={"M"}>
+                                Male
+                              </MenuItem>
+                              <MenuItem key={"F"} value={"F"}>
+                                Female
+                              </MenuItem>
+                              <MenuItem key={"N"} value={"N"}>
+                                Non-Binary
+                              </MenuItem>
+                            </Select>
+                          </FormControl>
+
+                          <FormControl
+                            sx={{ width: 200, marginX: 2, marginY: 2 }}
+                          >
+                            <LocalizationProvider dateAdapter={AdapterMoment}>
+                              <DatePicker
+                                label="Date of Birth"
+                                id="dob"
+                                inputFormat="DD-MM-yyyy"
+                                value={tickets[index].dob}
+                                onChange={(e) => {
+                                  setTickets(
+                                    update(tickets, {
+                                      [index]: {
+                                        dob: { $set: e },
+                                      },
+                                    })
+                                  );
+                                }}
+                                renderInput={(params) => (
+                                  <TextField {...params} />
+                                )}
+                              />
+                            </LocalizationProvider>
+                          </FormControl>
+                        </div>
                         <div>
                           <FormControl
                             sx={{ width: 200, marginX: 2, marginY: 2 }}
@@ -369,7 +570,7 @@ export default function FlightSearch(props) {
                             <TextField
                               id="nationalId"
                               label="National Id"
-                              // value={tickets[index].name}
+                              value={tickets[index].nationalId}
                               onChange={(e) => {
                                 setTickets(
                                   update(tickets, {
@@ -387,7 +588,7 @@ export default function FlightSearch(props) {
                             <InputLabel id="seat">Seat</InputLabel>
                             <Select
                               id="seatSelect"
-                              // value={tickets[index].seat}
+                              value={tickets[index].seat}
                               label="Seat"
                               onChange={(e) => {
                                 setTickets(
@@ -412,7 +613,87 @@ export default function FlightSearch(props) {
                   ))}
                 </DialogContent>
                 <DialogActions sx={{ backgroundColor: "#eceff4" }}>
-                  <Button autoFocus>Proceed</Button>
+                  <Button
+                    disabled={!ticketsFull}
+                    color="grey"
+                    variant="contained"
+                    onClick={() => handlePassengerSubmit()}
+                    sx={{
+                      marginTop: 3,
+                      color: "#d8dee9",
+                      backgroundColor: "#424864",
+                    }}
+                  >
+                    Proceed
+                  </Button>
+                </DialogActions>
+              </Dialog>
+            )}
+            {openSummaryDialog && (
+              <Dialog
+                open={openSummaryDialog}
+                onClose={handleCloseSummaryDialog}
+              >
+                <DialogTitle
+                  sx={{ backgroundColor: "#eceff4" }}
+                  id="alert-dialog-title"
+                >
+                  Payment
+                </DialogTitle>
+                <DialogContent sx={{ backgroundColor: "#eceff4" }}>
+                  Total cost: {calculateCost()}$
+                  <Divider sx={{ marginY: 2, backgroundColor: "#eceff4" }} />
+                  <div>
+                    <TextField
+                      label="Card Number"
+                      sx={{ width: 240, marginX: 2, marginY: 1 }}
+                      id="outlined-start-adornment"
+                      // sx={{ m: 1, width: '25ch' }}
+                      InputProps={{
+                        endAdornment: (
+                          <InputAdornment position="end">
+                            <CreditCardIcon />
+                          </InputAdornment>
+                        ),
+                      }}
+                    />
+
+                    <TextField
+                      sx={{ width: 240, marginX: 2, marginY: 1 }}
+                      id="name"
+                      label="Name Surname"
+                      variant="outlined"
+                    />
+                  </div>
+                  <div>
+                    <TextField
+                      sx={{ width: 240, marginX: 2, marginY: 1 }}
+                      id="expireDate"
+                      label="Expire Date"
+                      variant="outlined"
+                    />
+
+                    <TextField
+                      sx={{ width: 240, marginX: 2, marginY: 1 }}
+                      id="csv"
+                      label="CSV"
+                      variant="outlined"
+                    />
+                  </div>
+                </DialogContent>
+                <DialogActions sx={{ backgroundColor: "#eceff4" }}>
+                  <Button
+                    color="grey"
+                    variant="contained"
+                    onClick={handleSubmitPayment}
+                    sx={{
+                      marginTop: 1,
+                      color: "#d8dee9",
+                      backgroundColor: "#424864",
+                    }}
+                  >
+                    Proceed
+                  </Button>
                 </DialogActions>
               </Dialog>
             )}

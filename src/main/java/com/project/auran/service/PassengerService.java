@@ -20,9 +20,10 @@ public class PassengerService {
 
     private final PassengerRepository passengerRepository;
 
-    public PassengerService(PassengerRepository passengerRepository){
+    public PassengerService(PassengerRepository passengerRepository) {
         this.passengerRepository = passengerRepository;
     }
+
     @Autowired
     private GenderRepository genderRepository;
     @Autowired
@@ -30,7 +31,8 @@ public class PassengerService {
 
     public Passenger addPassenger(Character genderId, Passenger passenger) {
         Optional<Passenger> passengerName = passengerRepository.findByPnr(passenger.getPnr());
-        if (passengerName.isPresent()) throw new RuntimeException("a passenger by that PNR already exists.");
+        if (passengerName.isPresent())
+            throw new RuntimeException("a passenger by that PNR already exists.");
         Gender gender = genderRepository.findGenderById(genderId)
                 .orElseThrow(() -> new IllegalStateException("no gender found with given id"));
         passenger.setGender(gender);
@@ -59,5 +61,9 @@ public class PassengerService {
                 .orElseThrow(() -> new IllegalStateException("no passenger found with given id"));
         return ticketRepository.findTicketByPassenger(passenger);
 
+    }
+
+    public Optional<Passenger> getPassengerByNationalId(String nationalId) {
+        return passengerRepository.findPassengerByNationalId(nationalId);
     }
 }

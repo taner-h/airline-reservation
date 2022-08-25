@@ -9,4 +9,6 @@ public interface PassengerRepository extends JpaRepository<Passenger, Long> {
     Optional<Passenger> findByPnr(String pnr);
 
     Optional<Passenger> findPassengerById(Long passengerId);
+
+    Optional<Passenger> findPassengerByNationalId(String nationalId);
 }

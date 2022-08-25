@@ -9,44 +9,50 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @CrossOrigin(origins = "*")
 @RequestMapping("passenger")
 public class PassengerController {
     private final PassengerService passengerService;
-    
+
     @Autowired
-    public PassengerController(PassengerService passengerService){
+    public PassengerController(PassengerService passengerService) {
         this.passengerService = passengerService;
     }
 
     @PostMapping
     public Passenger addPassenger(@RequestParam Character genderId,
-                                  @RequestBody Passenger passenger){
+            @RequestBody Passenger passenger) {
         return passengerService.addPassenger(genderId, passenger);
     }
 
     @GetMapping
     public Page<Passenger> getPassengers(@RequestParam(defaultValue = "0") Integer page,
-                                         @RequestParam(defaultValue = "10") Integer pageSize,
-                                         @RequestParam(defaultValue = "id") String sortBy){
+            @RequestParam(defaultValue = "10") Integer pageSize,
+            @RequestParam(defaultValue = "id") String sortBy) {
         return passengerService.getPassengers(page, pageSize, sortBy);
     }
 
     @GetMapping(path = "{passengerId}")
-    public Passenger getPassenger(@PathVariable Long passengerId){
+    public Passenger getPassenger(@PathVariable Long passengerId) {
         return passengerService.getPassenger(passengerId);
+    }
+
+    @GetMapping(path = "/nationalId/{nationalId}")
+    public Optional<Passenger> getPassengerByNationalId(@PathVariable String nationalId) {
+        return passengerService.getPassengerByNationalId(nationalId);
     }
 
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     @DeleteMapping(path = "{passengerId}")
-    public void deletePassenger(@PathVariable Long passengerId){
+    public void deletePassenger(@PathVariable Long passengerId) {
         passengerService.deletePassenger(passengerId);
     }
 
     @GetMapping(path = "{passengerId}/tickets")
-    public List<Ticket> getPassengerTickets(@PathVariable Long passengerId){
+    public List<Ticket> getPassengerTickets(@PathVariable Long passengerId) {
         return passengerService.getPassengerTickets(passengerId);
     }
 

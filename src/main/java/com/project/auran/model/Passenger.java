@@ -19,10 +19,11 @@ public class Passenger {
     private long id;
     private String name;
     private String surname;
+    private String nationalId;
     @NotNull
     private String pnr;
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
-    @JoinColumn(name="gender_id")
+    @JoinColumn(name = "gender_id")
     private Gender gender;
 
 }

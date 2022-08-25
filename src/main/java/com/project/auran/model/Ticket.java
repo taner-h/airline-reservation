@@ -22,7 +22,6 @@ public class Ticket {
     private String seat;
     private String flightClass;
     private String price;
-    private Boolean hasLuggage;
 
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name="passenger_id")
