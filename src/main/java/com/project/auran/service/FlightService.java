@@ -2,16 +2,12 @@ package com.project.auran.service;
 
 import com.project.auran.model.Airplane;
 import com.project.auran.model.Airport;
-import com.project.auran.model.Ticket;
 import com.project.auran.model.Flight;
+import com.project.auran.model.Ticket;
 import com.project.auran.repository.AirplaneRepository;
 import com.project.auran.repository.AirportRepository;
 import com.project.auran.repository.FlightRepository;
 import com.project.auran.repository.TicketRepository;
-import net.bytebuddy.asm.Advice;
-import org.hibernate.Filter;
-import org.hibernate.Session;
-import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -117,28 +113,11 @@ public class FlightService {
 
 	}
 
-//	public List<Flight> searchFlights(Long srcId, Long destId, LocalDate dateStart,
-//			LocalDate dateEnd, Integer page, Integer pageSize) {
-//
-//		//
-//		Session session = entityManager.unwrap(Session.class);
-//		Filter filter = session.enableFilter("flightSearch");
-//		filter.setParameter("dateStart", dateStart);
-//		filter.setParameter("dateEnd", dateEnd);
-//		// String hql = "from Flight f where f.destinationAirport.id = :destId and
-//		// f.sourceAirport.id = :srcId";
-//		Query query = session.createQuery(
-//				"from Flight f where f.destinationAirport.id = :destId and f.sourceAirport.id = :srcId order by f.id");
-//		query.setParameter("destId", destId);
-//		query.setParameter("srcId", srcId);
-//		if (page != null)
-//			query.setFirstResult((page - 1) * pageSize);
-//		if (pageSize != null)
-//			query.setMaxResults(pageSize);
-//		List<Flight> response = query.list();
-//		session.close();
-//		return response;
-//
-//	}
+	public List<Ticket> getTicketsOfFlight(Long flightId) {
+		Flight flight = flightRepository.findById(flightId)
+				.orElseThrow(() -> new IllegalStateException("no flight found with given id"));
+		return ticketRepository.findTicketByFlight(flight);
+
+	}
 
 }

@@ -65,6 +65,8 @@ export default function FlightSearch(props) {
   const [flightClass, setFlightClass] = useState("");
   const [ticketNumber, setTicketNumber] = useState();
   const [selectedFlight, setSelectedFlight] = useState();
+  const [allBusinessSeats, setAllBusinessSeats] = useState([]);
+  const [allEconomySeats, setAllEconomySeats] = useState([]);
   const [tickets, setTickets] = useState([]);
   const [ticketsFull, setTicketsFull] = useState(false);
   const [passengers, setPassengers] = useState([]);
@@ -83,6 +85,18 @@ export default function FlightSearch(props) {
 
   const handleOpenSelectDialog = (flight) => {
     setSelectedFlight(flight);
+    setAllBusinessSeats(
+      generateAllSeats(
+        flight.airplane.airplaneModel.businessSeatRow,
+        flight.airplane.airplaneModel.businessSeatColumn
+      )
+    );
+    setAllEconomySeats(
+      generateAllSeats(
+        flight.airplane.airplaneModel.economySeatRow,
+        flight.airplane.airplaneModel.economySeatColumn
+      )
+    );
     setOpenSelectDialog(true);
   };
 
@@ -305,6 +319,29 @@ export default function FlightSearch(props) {
     });
 
     handleCloseSummaryDialog();
+  };
+
+  const generateAllSeats = (row, column) => {
+    const letters = new Array(column)
+      .fill(1)
+      .map((_, i) => String.fromCharCode(65 + i));
+
+    const numbers = Array.from({ length: 10 }, (_, i) => i + 1);
+    const arr = [];
+
+    numbers.forEach((number) => {
+      letters.forEach((letter) => {
+        arr.push(number + letter);
+      });
+    });
+
+    return arr;
+  };
+
+  const calculateAvailableSeats = (arr1, arr2) => {
+    return arr1
+      .concat(arr2)
+      .filter((item) => !arr1.includes(item) || !arr2.includes(item));
   };
 
   useEffect(() => {
@@ -600,11 +637,17 @@ export default function FlightSearch(props) {
                                 );
                               }}
                             >
-                              {options.map((option) => (
-                                <MenuItem key={option} value={option}>
-                                  {option}
-                                </MenuItem>
-                              ))}
+                              {flightClass === "Business"
+                                ? allBusinessSeats.map((seat) => (
+                                    <MenuItem key={seat} value={seat}>
+                                      {seat}
+                                    </MenuItem>
+                                  ))
+                                : allEconomySeats.map((seat) => (
+                                    <MenuItem key={seat} value={seat}>
+                                      {seat}
+                                    </MenuItem>
+                                  ))}
                             </Select>
                           </FormControl>
                         </div>

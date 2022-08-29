@@ -1,6 +1,7 @@
 package com.project.auran.controller;
 
 import com.project.auran.model.Flight;
+import com.project.auran.model.Ticket;
 import com.project.auran.service.FlightService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -26,6 +27,7 @@ public class FlightController {
     public FlightController(FlightService flightService) {
         this.flightService = flightService;
     }
+
 
     @PostMapping
     public Flight addFlight(@RequestParam Long airplaneId,
@@ -63,16 +65,6 @@ public class FlightController {
         return flightService.getFlight(flightId);
     }
 
-//    @GetMapping(path = "/search")
-//    public List<Flight> searchFlights(@RequestParam(required = false) Integer page,
-//            @RequestParam(required = false) Integer pageSize,
-//            @RequestParam Long srcId,
-//            @RequestParam Long destId,
-//            @RequestParam("dateStart") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateStart,
-//            @RequestParam("dateEnd") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateEnd) {
-//        return flightService.searchFlights(srcId, destId, dateStart, dateEnd, page, pageSize);
-//    }
-
     @GetMapping(path = "/search")
     public Page<Flight> searchFlights(@RequestParam(defaultValue = "0") Integer page,
                                       @RequestParam(defaultValue = "10") Integer pageSize,
@@ -82,7 +74,11 @@ public class FlightController {
                                       @RequestParam("dateStart") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateStart,
                                       @RequestParam("dateEnd") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateEnd) {
         return flightService.searchFlights(page, pageSize, sortBy, srcId, destId, dateStart, dateEnd);
+    }
 
+    @GetMapping(path = "/{flightId}/tickets")
+    public List<Ticket> getTicketsOfFlight(@PathVariable Long flightId){
+        return flightService.getTicketsOfFlight(flightId);
     }
 
 }
