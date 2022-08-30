@@ -8,13 +8,12 @@ import Toolbar from "@mui/material/Toolbar";
 import List from "@mui/material/List";
 import Typography from "@mui/material/Typography";
 import Divider from "@mui/material/Divider";
-import { Link as RouteLink } from "react-router-dom";
+import { Link as RouteLink, useNavigate } from "react-router-dom";
 import IconButton from "@mui/material/IconButton";
 import Button from "@mui/material/Button";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import AccountCircle from "@mui/icons-material/AccountCircle";
-import Link from "@mui/material/Link";
 import MenuIcon from "@mui/icons-material/Menu";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import { mainListItems, secondaryListItems } from "./listItems";
@@ -69,11 +68,20 @@ const Drawer = styled(MuiDrawer, {
 
 const mdTheme = createTheme();
 
-function DashboardContent() {
+export default function DashboardNavBar(props) {
   const [open, setOpen] = React.useState(false);
 
   const toggleDrawer = () => {
     setOpen(!open);
+  };
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    localStorage.removeItem("AccessToken");
+    props.setIsLogged(false);
+    props.setUsername("");
+    props.setUserRoles([]);
+    navigate("/");
   };
 
   const [profileMenuOpened, setProfileMenuOpened] = useState(false);
@@ -131,8 +139,8 @@ function DashboardContent() {
       <Divider />
       <List component="nav">
         {mainListItems}
-        <Divider sx={{ my: 1 }} />
-        {secondaryListItems}
+        {/* <Divider sx={{ my: 1 }} />
+        {secondaryListItems} */}
       </List>
     </Drawer>
   );
@@ -201,10 +209,13 @@ function DashboardContent() {
             </Button>
           </RouteLink>
 
-          <Button color="inherit" sx={{ backgroundColor: "#424864" }}>
-            Login
+          <Button
+            color="inherit"
+            sx={{ backgroundColor: "#424864" }}
+            onClick={handleLogout}
+          >
+            Logout
           </Button>
-
           <IconButton
             size="large"
             edge="end"
@@ -223,8 +234,4 @@ function DashboardContent() {
     </Box>
     // </ThemeProvider>
   );
-}
-
-export default function DashboardNavBar() {
-  return <DashboardContent />;
 }

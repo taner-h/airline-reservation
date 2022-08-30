@@ -1,29 +1,21 @@
-import React, { useState, useEffect } from "react";
-import { styled, createTheme, ThemeProvider } from "@mui/material/styles";
+import { FormControl, InputLabel, Select, TextField } from "@mui/material";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Container from "@mui/material/Container";
+import CssBaseline from "@mui/material/CssBaseline";
+import Grid from "@mui/material/Grid";
+import MenuItem from "@mui/material/MenuItem";
+import Paper from "@mui/material/Paper";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
+import Toolbar from "@mui/material/Toolbar";
+import Typography from "@mui/material/Typography";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import CssBaseline from "@mui/material/CssBaseline";
-import MuiDrawer from "@mui/material/Drawer";
-import Box from "@mui/material/Box";
-import MuiAppBar from "@mui/material/AppBar";
-import Toolbar from "@mui/material/Toolbar";
-import { useNavigate } from "react-router-dom";
-import Typography from "@mui/material/Typography";
-import Container from "@mui/material/Container";
-import Grid from "@mui/material/Grid";
-import Menu from "@mui/material/Menu";
-import MenuItem from "@mui/material/MenuItem";
-import { Link } from "react-router-dom";
-import Paper from "@mui/material/Paper";
-import Chart from "./Chart";
-import Deposits from "./Deposits";
-import Orders from "./Orders";
-import DashboardNavBar from "./DashboardNavBar";
-import NavBar from "./NavBar";
-import { FormControl, InputLabel, Select, TextField } from "@mui/material";
 import moment from "moment";
-import Button from "@mui/material/Button";
+import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import NavBar from "./NavBar";
 
 const mdTheme = createTheme();
 
@@ -87,7 +79,14 @@ export default function Homepage(props) {
           overflow: "auto",
         }}
       >
-        <NavBar />
+        <NavBar
+          setUsername={props.setUsername}
+          setUserRoles={props.setUserRoles}
+          setIsLogged={props.setIsLogged}
+          isLogged={props.isLogged}
+          page="login"
+          userRoles={props.userRoles}
+        />
         <Toolbar />
         <Container maxWidth="md" sx={{ mb: 4 }}>
           <Typography

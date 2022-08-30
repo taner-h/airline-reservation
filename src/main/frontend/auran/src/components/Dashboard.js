@@ -26,7 +26,12 @@ export default function Dashboard(props) {
     <ThemeProvider theme={mdTheme}>
       <Box sx={{ display: "flex" }}>
         <CssBaseline />
-        {props.isAdmin ? <DashboardNavBar /> : <NavBar />}
+        <DashboardNavBar
+          isLogged={props.isLogged}
+          setIsLogged={props.setIsLogged}
+          setUsername={props.setUsername}
+          setUserRoles={props.setUserRoles}
+        />
         <Box
           component="main"
           sx={{

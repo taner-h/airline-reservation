@@ -28,7 +28,6 @@ public class UserService implements UserDetailsService {
     @Autowired
     private RoleRepository roleRepository;
 
-
     @Autowired
     public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
@@ -41,9 +40,9 @@ public class UserService implements UserDetailsService {
                 .orElseThrow(() -> new IllegalStateException("no user found with given id"));
 
         Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
-        user.getRoles().forEach(role ->
-                authorities.add(new SimpleGrantedAuthority(role.getName())));
-        return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), authorities);
+        user.getRoles().forEach(role -> authorities.add(new SimpleGrantedAuthority(role.getName())));
+        return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(),
+                authorities);
     }
 
     public Page<User> getUsers(Integer page, Integer pageSize, String sortBy) {
@@ -58,12 +57,16 @@ public class UserService implements UserDetailsService {
 
     public User addUser(User user) {
         Optional<User> userEmailOptional = userRepository.findUserByEmail(user.getEmail());
-        if (userEmailOptional.isPresent()) throw new RuntimeException("a user by that email already exists.");
+        if (userEmailOptional.isPresent())
+            throw new RuntimeException("a user by that email already exists.");
         Optional<User> usernameOptional = userRepository.findUserByUsername(user.getUsername());
-        if (usernameOptional.isPresent()) throw new RuntimeException("a user by that email already exists.");
-
+        if (usernameOptional.isPresent())
+            throw new RuntimeException("a user by that email already exists.");
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.getRoles().add(new Role(
+                (long) 2,
+                "USER"));
         userRepository.save(user);
         return user;
     }
@@ -79,7 +82,6 @@ public class UserService implements UserDetailsService {
         return user;
 
     }
-
 
     public void deleteUser(Long userId) {
         userRepository.findById(userId)

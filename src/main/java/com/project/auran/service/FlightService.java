@@ -20,6 +20,7 @@ import javax.persistence.PersistenceContext;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -101,7 +102,8 @@ public class FlightService {
 				.orElseThrow(() -> new IllegalStateException("no flight found with given id"));
 	}
 
-	public Page<Flight> searchFlights(Integer page, Integer pageSize, String sortBy, Long srcId, Long destId, LocalDate dateStart, LocalDate dateEnd) {
+	public Page<Flight> searchFlights(Integer page, Integer pageSize, String sortBy, Long srcId, Long destId,
+			LocalDate dateStart, LocalDate dateEnd) {
 		Pageable pageable = PageRequest.of(page, pageSize, Sort.Direction.ASC, sortBy);
 		Airport destAirport = airportRepository.findAirportById(destId)
 				.orElseThrow(() -> new IllegalStateException("no airport found with given id"));
@@ -109,7 +111,8 @@ public class FlightService {
 				.orElseThrow(() -> new IllegalStateException("no airport found with given id"));
 		LocalDateTime takeoff1 = dateStart.atStartOfDay();
 		LocalDateTime takeoff2 = LocalDateTime.of(dateEnd, LocalTime.MAX);
-		return flightRepository.findAllByDestinationAirportAndSourceAirportAndTakeoffBetween(destAirport, srcAirport,takeoff1, takeoff2, pageable);
+		return flightRepository.findAllByDestinationAirportAndSourceAirportAndTakeoffBetween(destAirport, srcAirport,
+				takeoff1, takeoff2, pageable);
 
 	}
 
@@ -117,7 +120,43 @@ public class FlightService {
 		Flight flight = flightRepository.findById(flightId)
 				.orElseThrow(() -> new IllegalStateException("no flight found with given id"));
 		return ticketRepository.findTicketByFlight(flight);
+	}
 
+	public List<String> getEconomySeatsOfFlight(Long flightId) {
+		Flight flight = flightRepository.findById(flightId)
+				.orElseThrow(() -> new IllegalStateException("no flight found with given id"));
+		List<Ticket> tickets = ticketRepository.findTicketByFlight(flight);
+		List<String> economy = new ArrayList<String>();
+
+		for (Ticket ticket : tickets) {
+			if (ticket.getFlightClass().equals("Economy"))
+				economy.add(ticket.getSeat());
+		}
+		return economy;
+	}
+
+	public List<String> getBusinessSeatsOfFlight(Long flightId) {
+		Flight flight = flightRepository.findById(flightId)
+				.orElseThrow(() -> new IllegalStateException("no flight found with given id"));
+		List<Ticket> tickets = ticketRepository.findTicketByFlight(flight);
+		List<String> business = new ArrayList<String>();
+
+		for (Ticket ticket : tickets) {
+			if (ticket.getFlightClass().equals("Business"))
+				business.add(ticket.getSeat());
+		}
+		return business;
+	}
+
+	public List<String> getSeatsOfFlight(Long flightId) {
+		Flight flight = flightRepository.findById(flightId)
+				.orElseThrow(() -> new IllegalStateException("no flight found with given id"));
+		List<Ticket> tickets = ticketRepository.findTicketByFlight(flight);
+		List<String> seats = new ArrayList<String>();
+		for (Ticket ticket : tickets) {
+			seats.add(ticket.getSeat());
+		}
+		return seats;
 	}
 
 }

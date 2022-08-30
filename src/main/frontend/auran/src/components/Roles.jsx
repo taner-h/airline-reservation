@@ -7,13 +7,12 @@ import React, { useEffect, useState } from "react";
 import DeleteIcon from "@mui/icons-material/Delete";
 import FlightTakeoffIcon from "@mui/icons-material/FlightTakeoff";
 import Button from "@mui/material/Button";
-import { tableCellClasses } from "@mui/material/TableCell";
 import Fab from "@mui/material/Fab";
 import AddIcon from "@mui/icons-material/Add";
 import Pagination from "@mui/material/Pagination";
 import EditIcon from "@mui/icons-material/Edit";
-import Box from "@mui/material/Box";
 import { StyledTableCell, StyledTableRow } from "./StyledTable";
+import Box from "@mui/material/Box";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
@@ -36,23 +35,26 @@ import moment from "moment";
 
 const mdTheme = createTheme();
 
-export default function Airports(props) {
+export default function Roles(props) {
   const [page, setPage] = useState(1);
   const [totalPage, setTotalPage] = useState(10);
-  const [airports, setAirports] = useState([]);
+  const [roles, setRoles] = useState([]);
 
-  const getAirports = async () => {
+  const getRoles = async () => {
     try {
       // console.log(sortBy)
 
-      const response = await fetch(
-        `http://localhost:8080/airport?page=${page - 1}`,
-        { method: "GET" }
-      );
+      const response = await fetch(`http://localhost:8080/role`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + localStorage.getItem("AccessToken"),
+        },
+      });
       // console.log(response)
       const jsonRes = await response.json();
       // console.log(jsonRes)
-      setAirports(jsonRes.content);
+      setRoles(jsonRes);
       setTotalPage(jsonRes.totalPages);
 
       // console.log(flights)
@@ -63,7 +65,7 @@ export default function Airports(props) {
   };
 
   useEffect(() => {
-    getAirports();
+    getRoles();
   }, [page]);
 
   return (
@@ -88,14 +90,14 @@ export default function Airports(props) {
             overflow: "auto",
           }}
         >
-          <Container maxWidth="lg" sx={{ mt: 12, mb: 8 }}>
+          <Container maxWidth="sm" sx={{ mt: 12, mb: 8 }}>
             <Typography
               variant="h3"
               // align="left"
               sx={{ fontWeight: "500", mb: 3 }}
               color="#292d3e"
             >
-              Airports
+              Roles
             </Typography>
 
             <Typography
@@ -104,34 +106,29 @@ export default function Airports(props) {
               sx={{ fontWeight: "400", mb: 3 }}
               color="#292d3e"
             >
-              Add, delete or edit airports.
+              Add, delete or edit roles.
             </Typography>
 
             <TableContainer component={Paper}>
               <Table aria-label="flights table">
                 <TableHead>
                   <TableRow>
-                    <StyledTableCell>Name</StyledTableCell>
-                    <StyledTableCell align="center">Code</StyledTableCell>
-                    <StyledTableCell align="center">Country</StyledTableCell>
-                    <StyledTableCell align="center">City</StyledTableCell>
+                    <StyledTableCell>Role Id</StyledTableCell>
+                    <StyledTableCell align="center">Role Name</StyledTableCell>
                     <StyledTableCell align="center">Actions</StyledTableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {airports.map((airport) => (
+                  {roles.map((role) => (
                     <StyledTableRow
-                      key={airport.id}
+                      key={role.id}
                       sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
                     >
                       <TableCell component="th" scope="row">
-                        {airport.name}
+                        {role.id}
                       </TableCell>
-                      <TableCell align="center">{airport.code}</TableCell>
-                      <TableCell align="center">
-                        {airport.city.country.name}
-                      </TableCell>
-                      <TableCell align="center">{airport.city.name}</TableCell>
+                      <TableCell align="center">{role.name}</TableCell>
+
                       <TableCell align="center">
                         <IconButton
                           size="large"

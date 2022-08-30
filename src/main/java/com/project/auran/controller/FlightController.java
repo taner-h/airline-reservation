@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.event.PublicInvocationEvent;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,7 +18,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@CrossOrigin(origins = "*")
+@CrossOrigin
 @RequestMapping("flight")
 public class FlightController {
 
@@ -27,7 +28,6 @@ public class FlightController {
     public FlightController(FlightService flightService) {
         this.flightService = flightService;
     }
-
 
     @PostMapping
     public Flight addFlight(@RequestParam Long airplaneId,
@@ -67,18 +67,33 @@ public class FlightController {
 
     @GetMapping(path = "/search")
     public Page<Flight> searchFlights(@RequestParam(defaultValue = "0") Integer page,
-                                      @RequestParam(defaultValue = "10") Integer pageSize,
-                                      @RequestParam(defaultValue = "id") String sortBy,
-                                      @RequestParam Long srcId,
-                                      @RequestParam Long destId,
-                                      @RequestParam("dateStart") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateStart,
-                                      @RequestParam("dateEnd") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateEnd) {
+            @RequestParam(defaultValue = "10") Integer pageSize,
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam Long srcId,
+            @RequestParam Long destId,
+            @RequestParam("dateStart") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateStart,
+            @RequestParam("dateEnd") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateEnd) {
         return flightService.searchFlights(page, pageSize, sortBy, srcId, destId, dateStart, dateEnd);
     }
 
     @GetMapping(path = "/{flightId}/tickets")
-    public List<Ticket> getTicketsOfFlight(@PathVariable Long flightId){
+    public List<Ticket> getTicketsOfFlight(@PathVariable Long flightId) {
         return flightService.getTicketsOfFlight(flightId);
+    }
+
+    @GetMapping(path = "/{flightId}/economy")
+    public List<String> getEconomySeatsOfFlight(@PathVariable Long flightId) {
+        return flightService.getEconomySeatsOfFlight(flightId);
+    }
+
+    @GetMapping(path = "/{flightId}/business")
+    public List<String> getBusinessSeatsOfFlight(@PathVariable Long flightId) {
+        return flightService.getBusinessSeatsOfFlight(flightId);
+    }
+
+    @GetMapping(path = "/{flightId}/seats")
+    public List<String> getSeatsOfFlight(@PathVariable Long flightId) {
+        return flightService.getSeatsOfFlight(flightId);
     }
 
 }

@@ -1,28 +1,8 @@
-import DashboardNavBar from "./DashboardNavBar";
-import FlightAddDialog from "./FlightAddDialog";
-import FlightEditDialog from "./FlightEditDialog";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
-import NavBar from "./NavBar";
-import React, { useEffect, useState } from "react";
-import { StyledTableCell, StyledTableRow } from "./StyledTable";
-import DeleteIcon from "@mui/icons-material/Delete";
-import FlightTakeoffIcon from "@mui/icons-material/FlightTakeoff";
-import Button from "@mui/material/Button";
-import Fab from "@mui/material/Fab";
-import { tableCellClasses } from "@mui/material/TableCell";
 import AddIcon from "@mui/icons-material/Add";
-import Pagination from "@mui/material/Pagination";
+import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
-import Box from "@mui/material/Box";
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
-import { styled } from "@mui/material/styles";
-import DialogTitle from "@mui/material/DialogTitle";
 import {
   Container,
-  Grid,
   Paper,
   Table,
   TableBody,
@@ -32,8 +12,24 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
+import Fab from "@mui/material/Fab";
 import IconButton from "@mui/material/IconButton";
+import Pagination from "@mui/material/Pagination";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
 import moment from "moment";
+import React, { useEffect, useState } from "react";
+import DashboardNavBar from "./DashboardNavBar";
+import FlightAddDialog from "./FlightAddDialog";
+import FlightEditDialog from "./FlightEditDialog";
+import NavBar from "./NavBar";
+import { StyledTableCell, StyledTableRow } from "./StyledTable";
 
 const mdTheme = createTheme();
 
@@ -147,7 +143,7 @@ export default function Flights(props) {
     try {
       // console.log(sortBy)
 
-      const response = await fetch(`http://localhost:8080/flight/${id}`, {
+      await fetch(`http://localhost:8080/flight/${id}`, {
         method: "DELETE",
       });
       setFlights(
@@ -174,7 +170,12 @@ export default function Flights(props) {
     <ThemeProvider theme={mdTheme}>
       <Box sx={{ display: "flex" }}>
         {/*<CssBaseline />*/}
-        {props.isAdmin ? <DashboardNavBar /> : <NavBar />}
+        <DashboardNavBar
+          isLogged={props.isLogged}
+          setIsLogged={props.setIsLogged}
+          setUsername={props.setUsername}
+          setUserRoles={props.setUserRoles}
+        />
         <Box
           component="main"
           sx={{

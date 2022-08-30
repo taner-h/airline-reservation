@@ -1,20 +1,17 @@
-import React, { useState, useEffect } from "react";
+import { FormControl, InputLabel, Select, TextField } from "@mui/material";
+import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
-import Box from "@mui/material/Box";
-import Grid from "@mui/material/Grid";
-import InputAdornment from "@mui/material/InputAdornment";
 import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogTitle from "@mui/material/DialogTitle";
+import InputAdornment from "@mui/material/InputAdornment";
+import MenuItem from "@mui/material/MenuItem";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
 import moment from "moment";
-import MenuItem from "@mui/material/MenuItem";
-import { FormControl, InputLabel, Select, TextField } from "@mui/material";
-import DialogTitle from "@mui/material/DialogTitle";
-import { Container } from "@mui/system";
+import React, { useState } from "react";
 
 export default function FlightAddDialog(props) {
   const { flightAddDialogOpen, handleCloseFlightAddDialog, info } = props;
@@ -76,7 +73,7 @@ export default function FlightAddDialog(props) {
     try {
       // console.log(sortBy)
 
-      const response = await fetch(
+      await fetch(
         `http://localhost:8080/flight?airplaneId=${airplane}&destId=${destAirport}&srcId=${srcAirport}`,
         {
           method: "POST",

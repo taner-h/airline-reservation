@@ -1,53 +1,44 @@
-import DashboardNavBar from "./DashboardNavBar";
-import FlightAddDialog from "./FlightAddDialog";
-import FlightEditDialog from "./FlightEditDialog";
-import update from "immutability-helper";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
-import NavBar from "./NavBar";
-import React, { useEffect, useState } from "react";
-import { StyledTableCell, StyledTableRow } from "./StyledTable";
-import { Link } from "react-router-dom";
 import CreditCardIcon from "@mui/icons-material/CreditCard";
-import { FormControl, InputLabel, Select, TextField } from "@mui/material";
-import MenuItem from "@mui/material/MenuItem";
-import Divider from "@mui/material/Divider";
-import { tableCellClasses } from "@mui/material/TableCell";
-import DeleteIcon from "@mui/icons-material/Delete";
-import FlightTakeoffIcon from "@mui/icons-material/FlightTakeoff";
-import Button from "@mui/material/Button";
-import Fab from "@mui/material/Fab";
-import AddIcon from "@mui/icons-material/Add";
-import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import Pagination from "@mui/material/Pagination";
-import EditIcon from "@mui/icons-material/Edit";
-import Accordion from "@mui/material/Accordion";
-import AccordionDetails from "@mui/material/AccordionDetails";
-import AccordionSummary from "@mui/material/AccordionSummary";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import Box from "@mui/material/Box";
-import Dialog from "@mui/material/Dialog";
-import Input from "@mui/material/Input";
-import InputAdornment from "@mui/material/InputAdornment";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
-import DialogTitle from "@mui/material/DialogTitle";
 import {
   Container,
-  Grid,
+  FormControl,
+  InputLabel,
   Paper,
+  Select,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableHead,
   TableRow,
+  TextField,
   Typography,
 } from "@mui/material";
-import IconButton from "@mui/material/IconButton";
+import Accordion from "@mui/material/Accordion";
+import AccordionDetails from "@mui/material/AccordionDetails";
+import AccordionSummary from "@mui/material/AccordionSummary";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
+import Divider from "@mui/material/Divider";
+import InputAdornment from "@mui/material/InputAdornment";
+import MenuItem from "@mui/material/MenuItem";
+import Pagination from "@mui/material/Pagination";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import update from "immutability-helper";
 import moment from "moment";
+import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import NavBar from "./NavBar";
+import { StyledTableCell, StyledTableRow } from "./StyledTable";
 
 const mdTheme = createTheme();
 
@@ -65,8 +56,8 @@ export default function FlightSearch(props) {
   const [flightClass, setFlightClass] = useState("");
   const [ticketNumber, setTicketNumber] = useState();
   const [selectedFlight, setSelectedFlight] = useState();
-  const [allBusinessSeats, setAllBusinessSeats] = useState([]);
-  const [allEconomySeats, setAllEconomySeats] = useState([]);
+  const [availableBusinessSeats, setAvailableBusinessSeats] = useState([]);
+  const [availableEconomySeats, setAvailableEconomySeats] = useState([]);
   const [tickets, setTickets] = useState([]);
   const [ticketsFull, setTicketsFull] = useState(false);
   const [passengers, setPassengers] = useState([]);
@@ -83,20 +74,28 @@ export default function FlightSearch(props) {
     // setTicketsEmpty();
   };
 
-  const handleOpenSelectDialog = (flight) => {
+  const handleOpenSelectDialog = async (flight) => {
     setSelectedFlight(flight);
-    setAllBusinessSeats(
-      generateAllSeats(
-        flight.airplane.airplaneModel.businessSeatRow,
-        flight.airplane.airplaneModel.businessSeatColumn
-      )
+    const businessSeats = generateAllSeats(
+      flight.airplane.airplaneModel.businessSeatRow,
+      flight.airplane.airplaneModel.businessSeatColumn
     );
-    setAllEconomySeats(
-      generateAllSeats(
-        flight.airplane.airplaneModel.economySeatRow,
-        flight.airplane.airplaneModel.economySeatColumn
-      )
+
+    const economySeats = generateAllSeats(
+      flight.airplane.airplaneModel.economySeatRow,
+      flight.airplane.airplaneModel.economySeatColumn
     );
+
+    const takenBusinessSeats = await getTakenBusinessSeats(flight.id);
+    const takenEconomySeats = await getTakenEconomySeats(flight.id);
+
+    setAvailableBusinessSeats(
+      calculateAvailableSeats(businessSeats, takenBusinessSeats)
+    );
+    setAvailableEconomySeats(
+      calculateAvailableSeats(economySeats, takenEconomySeats)
+    );
+
     setOpenSelectDialog(true);
   };
 
@@ -190,20 +189,6 @@ export default function FlightSearch(props) {
       console.error(err.message);
     }
   };
-  const options = [
-    "1A",
-    "1B",
-    "1C",
-    "1D",
-    "2A",
-    "2B",
-    "2C",
-    "2D",
-    "3A",
-    "3B",
-    "3C",
-    "3D",
-  ];
 
   const clearFilters = () => {
     setFilters({
@@ -247,6 +232,39 @@ export default function FlightSearch(props) {
       const responseJson = await response.json();
       if (responseJson) return responseJson;
       else return false;
+    } catch (error) {
+      console.error(error.message);
+    }
+  };
+
+  const getTakenEconomySeats = async (flightId) => {
+    try {
+      const response = await fetch(
+        `http://localhost:8080/flight/${flightId}/economy`,
+        {
+          method: "GET",
+        }
+      );
+      // console.log(response);
+      const responseJson = await response.json();
+      // console.log(responseJson);
+      return responseJson;
+    } catch (error) {
+      console.error(error.message);
+    }
+  };
+
+  const getTakenBusinessSeats = async (flightId) => {
+    try {
+      const response = await fetch(
+        `http://localhost:8080/flight/${flightId}/business`,
+        {
+          method: "GET",
+        }
+      );
+
+      const responseJson = await response.json();
+      return responseJson;
     } catch (error) {
       console.error(error.message);
     }
@@ -326,7 +344,7 @@ export default function FlightSearch(props) {
       .fill(1)
       .map((_, i) => String.fromCharCode(65 + i));
 
-    const numbers = Array.from({ length: 10 }, (_, i) => i + 1);
+    const numbers = Array.from({ length: row }, (_, i) => i + 1);
     const arr = [];
 
     numbers.forEach((number) => {
@@ -371,7 +389,6 @@ export default function FlightSearch(props) {
     <ThemeProvider theme={mdTheme}>
       <Box sx={{ display: "flex" }}>
         {/*<CssBaseline />*/}
-        {props.isAdmin ? <DashboardNavBar /> : <NavBar />}
         <Box
           component="main"
           sx={{
@@ -385,7 +402,15 @@ export default function FlightSearch(props) {
             overflow: "auto",
           }}
         >
-          <Container maxWidth="lg" sx={{ mt: 12, mb: 8 }}>
+          <NavBar
+            userRoles={props.userRoles}
+            isLogged={props.isLogged}
+            setIsLogged={props.setIsLogged}
+            setUsername={props.setUsername}
+            setUserRoles={props.setUserRoles}
+          />
+
+          <Container maxWidth="lg" sx={{ mt: 6, mb: 8 }}>
             <Typography
               variant="h3"
               // align="left"
@@ -473,6 +498,7 @@ export default function FlightSearch(props) {
               <DialogActions>
                 <Link to="/" className="text-link">
                   <Button
+                    sx={{ marginBottom: 2, marginRight: 2 }}
                     //   onClick={() => handleDeleteFlight(selectedFlightToDelete)}
                     autoFocus
                   >
@@ -638,12 +664,12 @@ export default function FlightSearch(props) {
                               }}
                             >
                               {flightClass === "Business"
-                                ? allBusinessSeats.map((seat) => (
+                                ? availableBusinessSeats.map((seat) => (
                                     <MenuItem key={seat} value={seat}>
                                       {seat}
                                     </MenuItem>
                                   ))
-                                : allEconomySeats.map((seat) => (
+                                : availableEconomySeats.map((seat) => (
                                     <MenuItem key={seat} value={seat}>
                                       {seat}
                                     </MenuItem>
@@ -662,7 +688,8 @@ export default function FlightSearch(props) {
                     variant="contained"
                     onClick={() => handlePassengerSubmit()}
                     sx={{
-                      marginTop: 3,
+                      marginBottom: 2,
+                      marginRight: 2,
                       color: "#d8dee9",
                       backgroundColor: "#424864",
                     }}
@@ -730,7 +757,8 @@ export default function FlightSearch(props) {
                     variant="contained"
                     onClick={handleSubmitPayment}
                     sx={{
-                      marginTop: 1,
+                      marginBottom: 2,
+                      marginRight: 2,
                       color: "#d8dee9",
                       backgroundColor: "#424864",
                     }}

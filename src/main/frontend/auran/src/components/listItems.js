@@ -12,6 +12,7 @@ import FlightIcon from "@mui/icons-material/Flight";
 import FactoryIcon from "@mui/icons-material/Factory";
 import PersonIcon from "@mui/icons-material/Person";
 import LuggageIcon from "@mui/icons-material/Luggage";
+import PsychologyIcon from "@mui/icons-material/Psychology";
 import { Link } from "react-router-dom";
 
 export const mainListItems = (
@@ -88,12 +89,23 @@ export const mainListItems = (
       </ListItemButton>
     </Link>
 
-    <ListItemButton>
-      <ListItemIcon>
-        <PersonIcon className="drawer-logo" />
-      </ListItemIcon>
-      <ListItemText primary="Users" />
-    </ListItemButton>
+    <Link to="/admin/users" className="text-link">
+      <ListItemButton>
+        <ListItemIcon>
+          <PersonIcon className="drawer-logo" />
+        </ListItemIcon>
+        <ListItemText primary="Users" />
+      </ListItemButton>
+    </Link>
+
+    <Link to="/admin/roles" className="text-link">
+      <ListItemButton>
+        <ListItemIcon>
+          <PsychologyIcon className="drawer-logo" />
+        </ListItemIcon>
+        <ListItemText primary="Roles" />
+      </ListItemButton>
+    </Link>
   </React.Fragment>
 );
 

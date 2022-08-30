@@ -1,26 +1,8 @@
-import DashboardNavBar from "./DashboardNavBar";
-import FlightAddDialog from "./FlightAddDialog";
-import FlightEditDialog from "./FlightEditDialog";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
-import NavBar from "./NavBar";
-import { StyledTableCell, StyledTableRow } from "./StyledTable";
-import React, { useEffect, useState } from "react";
-import DeleteIcon from "@mui/icons-material/Delete";
-import FlightTakeoffIcon from "@mui/icons-material/FlightTakeoff";
-import Button from "@mui/material/Button";
-import Fab from "@mui/material/Fab";
 import AddIcon from "@mui/icons-material/Add";
-import Pagination from "@mui/material/Pagination";
+import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
-import Box from "@mui/material/Box";
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
-import DialogTitle from "@mui/material/DialogTitle";
 import {
   Container,
-  Grid,
   Paper,
   Table,
   TableBody,
@@ -30,8 +12,14 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
+import Box from "@mui/material/Box";
+import Fab from "@mui/material/Fab";
 import IconButton from "@mui/material/IconButton";
-import moment from "moment";
+import Pagination from "@mui/material/Pagination";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
+import React, { useEffect, useState } from "react";
+import DashboardNavBar from "./DashboardNavBar";
+import { StyledTableCell, StyledTableRow } from "./StyledTable";
 
 const mdTheme = createTheme();
 
@@ -70,7 +58,12 @@ export default function Airplanes(props) {
   return (
     <ThemeProvider theme={mdTheme}>
       <Box sx={{ display: "flex" }}>
-        {props.isAdmin ? <DashboardNavBar /> : <NavBar />}
+        <DashboardNavBar
+          isLogged={props.isLogged}
+          setIsLogged={props.setIsLogged}
+          setUsername={props.setUsername}
+          setUserRoles={props.setUserRoles}
+        />
         <Box
           component="main"
           sx={{
@@ -114,7 +107,6 @@ export default function Airplanes(props) {
                     </StyledTableCell>
                     <StyledTableCell align="center">Model</StyledTableCell>
                     <StyledTableCell align="center">Type</StyledTableCell>
-                    <StyledTableCell align="center">Seat Count</StyledTableCell>
                     <StyledTableCell align="center">Actions</StyledTableCell>
                   </TableRow>
                 </TableHead>
@@ -143,9 +135,7 @@ export default function Airplanes(props) {
                       <TableCell align="center">
                         {airplane.airplaneModel.airplaneType.name}
                       </TableCell>
-                      <TableCell align="center">
-                        {airplane.airplaneModel.totalSeatCount}
-                      </TableCell>
+
                       <TableCell align="center">
                         <IconButton
                           size="large"

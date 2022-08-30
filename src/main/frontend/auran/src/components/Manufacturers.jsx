@@ -68,7 +68,12 @@ export default function Manufacturers(props) {
   return (
     <ThemeProvider theme={mdTheme}>
       <Box sx={{ display: "flex" }}>
-        {props.isAdmin ? <DashboardNavBar /> : <NavBar />}
+        <DashboardNavBar
+          isLogged={props.isLogged}
+          setIsLogged={props.setIsLogged}
+          setUsername={props.setUsername}
+          setUserRoles={props.setUserRoles}
+        />
         <Box
           component="main"
           sx={{
